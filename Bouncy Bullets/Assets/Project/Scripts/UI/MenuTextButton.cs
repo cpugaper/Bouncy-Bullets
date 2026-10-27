@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -17,15 +18,32 @@ public class MenuTextButton : MonoBehaviour, IPointerEnterHandler, IPointerMoveH
     {
         button = GetComponent<Button>();
         if (text != null) normalMaterial = text.fontSharedMaterial;
+        button.onClick.AddListener(OnButtonClicked);
     }
+
+    private void OnDestroy()
+    {
+        if (button != null) button.onClick.RemoveListener(OnButtonClicked);
+    }
+
     private void OnEnable() =>
             SetHighlighted(EventSystem.current != null && EventSystem.current.currentSelectedGameObject == gameObject);
 
-    public void OnSelect(BaseEventData e) => SetHighlighted(true);
+    public void OnSelect(BaseEventData e)
+    {
+        SetHighlighted(true);
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayUIHover();
+    }
+
     public void OnDeselect(BaseEventData e) => SetHighlighted(false);
 
     public void OnPointerEnter(PointerEventData e) => TakeSelection();
-    public void OnPointerMove(PointerEventData e) => TakeSelection();  
+    public void OnPointerMove(PointerEventData e) => TakeSelection();
+
+    private void OnButtonClicked()
+    {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayUIClick();
+    }
 
     private void TakeSelection()
     {

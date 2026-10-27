@@ -458,6 +458,7 @@ GameObject:
   - component: {fileID: 142200498}
   - component: {fileID: 142200500}
   - component: {fileID: 142200499}
+  - component: {fileID: 142200501}
   m_Layer: 5
   m_Name: MusicVolume
   m_TagString: Untagged
@@ -576,6 +577,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 142200496}
   m_CullTransparentMesh: 1
+--- !u!114 &142200501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 142200496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb761b1dc44f87a4cb61e6d4428d976d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UISlider
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!1 &151702618
 GameObject:
   m_ObjectHideFlags: 0
@@ -7168,6 +7183,7 @@ GameObject:
   - component: {fileID: 473841427}
   - component: {fileID: 473841429}
   - component: {fileID: 473841428}
+  - component: {fileID: 473841430}
   m_Layer: 5
   m_Name: MouseSensitivity
   m_TagString: Untagged
@@ -7286,6 +7302,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 473841425}
   m_CullTransparentMesh: 1
+--- !u!114 &473841430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473841425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb761b1dc44f87a4cb61e6d4428d976d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UISlider
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!1 &492633486
 GameObject:
   m_ObjectHideFlags: 0
@@ -11412,6 +11442,7 @@ GameObject:
   - component: {fileID: 1367472896}
   - component: {fileID: 1367472895}
   - component: {fileID: 1367472894}
+  - component: {fileID: 1367472898}
   - component: {fileID: 1367472893}
   - component: {fileID: 1367472897}
   m_Layer: 0
@@ -11628,6 +11659,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   sfxAudioSource: {fileID: 1367472894}
+  uiAudioSource: {fileID: 1367472898}
   backgroundMusicSource: {fileID: 1367472893}
   shieldMusicSource: {fileID: 1367472897}
   audioMixer: {fileID: 24100000, guid: 1f0824ad9250b5144bdb758964f5faba, type: 2}
@@ -11638,6 +11670,12 @@ MonoBehaviour:
   enemyDeathSFX: {fileID: 8300000, guid: 7c2de8e149d8346748fb31ed14cc7986, type: 3}
   playerDeathSFX: {fileID: 8300000, guid: eb8998f3b3d3a49db96a634bf39ed153, type: 3}
   shootSFX: {fileID: 8300000, guid: 31fce46de4adb42a9904d8d68bde62f2, type: 3}
+  energyPickupSFX: {fileID: 8300000, guid: e7d00475d2aa2084ab8754eaeb5da561, type: 3}
+  turboSFX: {fileID: 8300000, guid: e181df306124132419ffb8fada1058c3, type: 3}
+  shooterShootSFX: {fileID: 8300000, guid: 3ea249c472637f3438f6614ec8a9bba4, type: 3}
+  volatileChargeSFX: {fileID: 8300000, guid: 1e31ea7dae2598d4e9569290da9ca265, type: 3}
+  uiClickSFX: {fileID: 8300000, guid: da87512076eb14593b04fb7e58cad6b0, type: 3}
+  uiHoverSFX: {fileID: 8300000, guid: abca7b6d2197d4b31a1269c2d331bbd3, type: 3}
   enemyDeathEventChannel: {fileID: 11400000, guid: b8fe3f5ff68d0ac4db6d9edc17aea79b, type: 2}
   playerDeathEventChannel: {fileID: 11400000, guid: 46787a97d9a32bd44bdf5c8b73622af0, type: 2}
   shootEventChannel: {fileID: 11400000, guid: af95b10fc6d5d864899fa356d5a003d0, type: 2}
@@ -11677,6 +11715,103 @@ AudioSource:
   m_Volume: 1
   m_Pitch: 1
   Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &1367472898
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1367472892}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 5217668963818028265, guid: 1f0824ad9250b5144bdb758964f5faba, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -13740,6 +13875,7 @@ GameObject:
   - component: {fileID: 1937274721}
   - component: {fileID: 1937274723}
   - component: {fileID: 1937274722}
+  - component: {fileID: 1937274724}
   m_Layer: 5
   m_Name: SFXVolume
   m_TagString: Untagged
@@ -13858,6 +13994,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1937274719}
   m_CullTransparentMesh: 1
+--- !u!114 &1937274724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1937274719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb761b1dc44f87a4cb61e6d4428d976d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UISlider
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!1 &1940601472
 GameObject:
   m_ObjectHideFlags: 0

@@ -71,6 +71,8 @@ public class ShooterEnemy : Enemy
         {
             Vector3 spawnPos = transform.position + transform.forward * fireOffset;
             spawnBulletEventChannel.RaiseEvent(BulletType.Homing, spawnPos, transform.rotation);
+
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayShooterShoot();
         }
 
         yield return new WaitForSeconds(waitAfterShot);

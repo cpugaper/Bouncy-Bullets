@@ -67,8 +67,10 @@ public class VolatileEnemy : Enemy
     private IEnumerator OverloadSequence()
     {
         isOverloading = true;
-        float timer = 0f;
 
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayVolatileCharge();
+
+        float timer = 0f;
         while (timer < overloadDuration)
         {
             timer += Time.deltaTime;

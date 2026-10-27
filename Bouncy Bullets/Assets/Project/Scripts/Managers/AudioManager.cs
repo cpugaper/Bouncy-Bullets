@@ -4,9 +4,11 @@ using UnityEngine.Serialization;
 
 public class AudioManager : MonoBehaviour
 {
+    public static AudioManager Instance { get; private set; }
+
     [Header("Audio Sources")]
     [SerializeField] private AudioSource sfxAudioSource;
-    [FormerlySerializedAs("musicAudioSource")]
+    [SerializeField] private AudioSource uiAudioSource;
     [SerializeField] private AudioSource backgroundMusicSource;
     [SerializeField] private AudioSource shieldMusicSource;
 
@@ -15,12 +17,24 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private string musicVolumeParam = "MusicVolume";
     [SerializeField] private string sfxVolumeParam = "SFXVolume";
 
-    [Header("Audio Clips")]
+    [Header("Music Audio Clips")]
     [SerializeField] private AudioClip shieldActiveMusic;
     [SerializeField] private AudioClip backgroundMusic;
+
+    [Header("Gameplay Audio Clips")]
     [SerializeField] private AudioClip enemyDeathSFX;
     [SerializeField] private AudioClip playerDeathSFX;
     [SerializeField] private AudioClip shootSFX;
+    [SerializeField] private AudioClip energyPickupSFX;
+    [SerializeField] private AudioClip turboSFX;
+
+    [Header("Enemy Audio Clips")]
+    [SerializeField] private AudioClip shooterShootSFX;
+    [SerializeField] private AudioClip volatileChargeSFX;
+
+    [Header("UI Audio Clips")]
+    [SerializeField] private AudioClip uiClickSFX;
+    [SerializeField] private AudioClip uiHoverSFX;
 
     [Header("Event Channels")]
     [SerializeField] private PositionEventChannelSO enemyDeathEventChannel;
@@ -32,8 +46,22 @@ public class AudioManager : MonoBehaviour
     [Header("Settings Event Channels")]
     [SerializeField] private FloatEventChannelSO musicVolumeChangedEventChannel;
     [SerializeField] private FloatEventChannelSO sfxVolumeChangedEventChannel;
-
     [SerializeField] private GameSettingsSO settings;
+
+    private bool shieldWasPlayingBeforePause = false;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return; 
+        }
+    }
 
     private void OnEnable()
     {
@@ -93,12 +121,58 @@ public class AudioManager : MonoBehaviour
 
     private void HandleGameStateChanged(GameState state)
     {
-        AudioListener.pause = state == GameState.Paused;
+        if (state == GameState.Paused)
+        {
+            if (sfxAudioSource != null && sfxAudioSource.isPlaying)
+            {
+                sfxAudioSource.Pause();
+            }
+
+            shieldWasPlayingBeforePause = shieldMusicSource.isPlaying;
+
+            if (shieldWasPlayingBeforePause)
+            {
+                shieldMusicSource.Pause();
+            }
+            else if (backgroundMusicSource.isPlaying)
+            {
+                backgroundMusicSource.Pause();
+            }
+        }
+        else if (state == GameState.Playing)
+        {
+            if (sfxAudioSource != null)
+            {
+                sfxAudioSource.UnPause();
+            }
+
+            if (shieldWasPlayingBeforePause)
+            {
+                shieldMusicSource.UnPause();
+            }
+            else
+            {
+                backgroundMusicSource.UnPause();
+            }
+        }
     }
 
     public void PlayEnemyDeath(Vector3 position) => PlaySFX(enemyDeathSFX);
-    public void PlayPlayerDeath(Vector3 position) => PlaySFX(playerDeathSFX);
+    public void PlayPlayerDeath(Vector3 position)
+    {
+        StopAllSFX(); 
+        StopShieldMusic();
+        PlaySFX(playerDeathSFX);
+    }
     public void PlayShoot() => PlaySFX(shootSFX);
+    public void PlayEnergyPickup() => PlaySFX(energyPickupSFX);
+    public void PlayTurbo() => PlaySFX(turboSFX);
+
+    public void PlayUIClick() => PlayUISFX(uiClickSFX);
+    public void PlayUIHover() => PlayUISFX(uiHoverSFX);
+
+    public void PlayShooterShoot() => PlaySFX(shooterShootSFX);
+    public void PlayVolatileCharge() => PlaySFX(volatileChargeSFX);
 
     public void PlayShieldMusic()
     {
@@ -116,6 +190,18 @@ public class AudioManager : MonoBehaviour
     {
         if (clip != null && sfxAudioSource != null)
             sfxAudioSource.PlayOneShot(clip);
+    }
+
+    public void PlayUISFX(AudioClip clip)
+    {
+        if (clip != null && uiAudioSource != null)
+            uiAudioSource.PlayOneShot(clip);
+    }
+
+    public void StopAllSFX()
+    {
+        if (sfxAudioSource != null)
+            sfxAudioSource.Stop();
     }
 
     private void OnDestroy()

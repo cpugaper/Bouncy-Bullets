@@ -29,6 +29,11 @@ public class EnergyPickup : MonoBehaviour
         if (!other.CompareTag("Player")) return;
         if (!other.TryGetComponent(out PlayerTurbo turbo) || !turbo.TryAddEnergy(energyAmount)) return;
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayEnergyPickup();
+        }
+
         if (addScoreEventChannel != null) addScoreEventChannel.RaiseEvent(scoreValue);
         Despawn();
     }

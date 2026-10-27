@@ -35,14 +35,20 @@ public class PlayerTurbo : MonoBehaviour
 
     private void OnDestroy() => controls.Dispose();
 
-    // Update is called once per frame
     void Update()
     {
         if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
 
         if (!IsBoosting)
         {
-            if (IsFull && controls.Player.Turbo.WasPressedThisFrame()) IsBoosting = true;
+            if (IsFull && controls.Player.Turbo.WasPressedThisFrame())
+            {
+                IsBoosting = true;
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlayTurbo();
+                }
+            }
             return;
         }
 
