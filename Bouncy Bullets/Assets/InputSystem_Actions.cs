@@ -145,6 +145,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShockWave"",
+                    ""type"": ""Button"",
+                    ""id"": ""0bd02e63-1968-4cde-885c-3e7d7be63da3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -365,6 +374,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Turbo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""db3dc257-8601-4be2-80d5-3b9b1b0cdfcb"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShockWave"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -969,6 +989,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Shield = m_Player.FindAction("Shield", throwIfNotFound: true);
         m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
         m_Player_Turbo = m_Player.FindAction("Turbo", throwIfNotFound: true);
+        m_Player_ShockWave = m_Player.FindAction("ShockWave", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1068,6 +1089,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Shield;
     private readonly InputAction m_Player_Aim;
     private readonly InputAction m_Player_Turbo;
+    private readonly InputAction m_Player_ShockWave;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1103,6 +1125,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Turbo".
         /// </summary>
         public InputAction @Turbo => m_Wrapper.m_Player_Turbo;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ShockWave".
+        /// </summary>
+        public InputAction @ShockWave => m_Wrapper.m_Player_ShockWave;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1147,6 +1173,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Turbo.started += instance.OnTurbo;
             @Turbo.performed += instance.OnTurbo;
             @Turbo.canceled += instance.OnTurbo;
+            @ShockWave.started += instance.OnShockWave;
+            @ShockWave.performed += instance.OnShockWave;
+            @ShockWave.canceled += instance.OnShockWave;
         }
 
         /// <summary>
@@ -1176,6 +1205,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Turbo.started -= instance.OnTurbo;
             @Turbo.performed -= instance.OnTurbo;
             @Turbo.canceled -= instance.OnTurbo;
+            @ShockWave.started -= instance.OnShockWave;
+            @ShockWave.performed -= instance.OnShockWave;
+            @ShockWave.canceled -= instance.OnShockWave;
         }
 
         /// <summary>
@@ -1518,6 +1550,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnTurbo(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShockWave" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShockWave(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

@@ -4,8 +4,8 @@ using UnityEngine.Pool;
 public class BulletPoolManager : MonoBehaviour
 {
     [Header("Bullet Prefab")]
-    [SerializeField] private Bullet bouncyBulletPrefab;
-    [SerializeField] private Bullet homingBulletPrefab;
+    [SerializeField] private BouncyBullet bouncyBulletPrefab;
+    [SerializeField] private HomingBullet homingBulletPrefab;
 
     [Header("Event Channels")]
     [SerializeField] private SpawnBulletEventChannelSO spawnBulletEventChannel;
@@ -14,8 +14,8 @@ public class BulletPoolManager : MonoBehaviour
     [SerializeField] private int defaultCapacity = 10;
     [SerializeField] private int maxSize = 30;
 
-    private ObjectPool<Bullet> bouncyPool;
-    private ObjectPool<Bullet> homingPool;
+    private ObjectPool<BouncyBullet> bouncyPool;
+    private ObjectPool<HomingBullet> homingPool;
 
     private void Awake()
     {
@@ -38,10 +38,10 @@ public class BulletPoolManager : MonoBehaviour
         homingPool = CreatePool(homingBulletPrefab);
     }
 
-    private ObjectPool<Bullet> CreatePool(Bullet prefab)
+    private ObjectPool<T> CreatePool<T>(T prefab) where T : Bullet
     {
-        ObjectPool<Bullet> pool = null;
-        pool = new ObjectPool<Bullet>(
+        ObjectPool<T> pool = null;
+        pool = new ObjectPool<T>(
             createFunc: () => CreateBulletInstance(prefab, pool),
             actionOnGet: (bullet) => bullet.gameObject.SetActive(true),
             actionOnRelease: (bullet) => bullet.gameObject.SetActive(false),
@@ -52,9 +52,9 @@ public class BulletPoolManager : MonoBehaviour
         return pool;
     }
 
-    private Bullet CreateBulletInstance(Bullet prefab, ObjectPool<Bullet> targetPool)
+    private T CreateBulletInstance<T>(T prefab, ObjectPool<T> targetPool) where T : Bullet
     {
-        Bullet instance = Instantiate(prefab, transform);
+        T instance = Instantiate(prefab, transform);
         instance.Initialize(() => targetPool.Release(instance));
         return instance;
     }

@@ -52,9 +52,26 @@ public class VolatileEnemy : Enemy
         transform.position += direction * speed * Time.deltaTime;
     }
 
+    protected override void CheckBounds()
+    {
+        if (isOverloading) return; 
+        base.CheckBounds();
+    }
+
     protected override void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("BouncyBullet") && !isOverloading)
+        if (isOverloading) return; 
+
+        if (other.CompareTag("BouncyBullet"))
+        {
+            if (addScoreEventChannel != null)
+            {
+                addScoreEventChannel.RaiseEvent(scoreValue);
+            }
+
+            overloadCoroutine = StartCoroutine(OverloadSequence());
+        }
+        else if (other.CompareTag("EnemyBullet"))
         {
             overloadCoroutine = StartCoroutine(OverloadSequence());
         }
@@ -108,5 +125,15 @@ public class VolatileEnemy : Enemy
         }
 
         Die();
+    }
+
+    public override void Die()
+    {
+        if (enemyDeathEventChannel != null)
+        {
+            enemyDeathEventChannel.RaiseEvent(transform.position);
+        }
+
+        ReturnToPool();
     }
 }

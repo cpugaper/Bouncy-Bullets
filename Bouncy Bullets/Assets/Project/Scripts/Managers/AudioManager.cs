@@ -25,8 +25,13 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip enemyDeathSFX;
     [SerializeField] private AudioClip playerDeathSFX;
     [SerializeField] private AudioClip shootSFX;
-    [SerializeField] private AudioClip energyPickupSFX;
     [SerializeField] private AudioClip turboSFX;
+    [SerializeField] private AudioClip shockwaveChargeSFX;
+
+    [Header("Pickup Audio Clips")]
+    [SerializeField] private AudioClip energyPickupSFX;
+    [SerializeField] private AudioClip scorePickupSFX;
+    [SerializeField] private AudioClip shockwavePickupSFX;
 
     [Header("Enemy Audio Clips")]
     [SerializeField] private AudioClip shooterShootSFX;
@@ -165,8 +170,12 @@ public class AudioManager : MonoBehaviour
         PlaySFX(playerDeathSFX);
     }
     public void PlayShoot() => PlaySFX(shootSFX);
-    public void PlayEnergyPickup() => PlaySFX(energyPickupSFX);
     public void PlayTurbo() => PlaySFX(turboSFX);
+    public void PlayShockwaveCharge() => PlaySFX(shockwaveChargeSFX);
+
+    public void PlayEnergyPickup() => PlaySFX(energyPickupSFX);
+    public void PlayScorePickup() => PlaySFX(scorePickupSFX);
+    public void PlayShockwavePickup() => PlaySFX(shockwavePickupSFX);
 
     public void PlayUIClick() => PlayUISFX(uiClickSFX);
     public void PlayUIHover() => PlayUISFX(uiHoverSFX);

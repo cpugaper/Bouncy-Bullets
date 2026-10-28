@@ -16,11 +16,11 @@ public abstract class Enemy : MonoBehaviour
     public EnemyType Type => enemyType;
 
     [Header("Event Channels")]
-    [SerializeField] private PositionEventChannelSO enemyDeathEventChannel;
+    [SerializeField] protected PositionEventChannelSO enemyDeathEventChannel;
 
     [Header("Score Settings")]
-    [SerializeField] private int scoreValue = 1;
-    [SerializeField] private IntEventChannelSO addScoreEventChannel;
+    [SerializeField] protected int scoreValue = 1;
+    [SerializeField] protected IntEventChannelSO addScoreEventChannel;
 
     private Action OnDespawn;
 

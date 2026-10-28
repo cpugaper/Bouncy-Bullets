@@ -6,6 +6,7 @@ public class PlayerTurbo : MonoBehaviour
     [SerializeField] private float maxEnergy = 100f;
     [SerializeField] private float drainPerSecond = 50f;
     [SerializeField] private float speedMultiplier = 2f;
+    [SerializeField] private float turboImpulseForce = 15f;
 
     [Header("Event Channels")]
     [SerializeField] private FloatEventChannelSO turboChangedEventChannel; 
@@ -39,19 +40,39 @@ public class PlayerTurbo : MonoBehaviour
     {
         if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
 
-        if (!IsBoosting)
+        HandleTurbo();
+    }
+
+    private void HandleTurbo()
+    {
+        if (!IsBoosting && IsFull && controls.Player.Turbo.WasPressedThisFrame())
         {
-            if (IsFull && controls.Player.Turbo.WasPressedThisFrame())
+            IsBoosting = true;
+            ApplyTurboImpulse();
+
+            if (AudioManager.Instance != null)
             {
-                IsBoosting = true;
-                if (AudioManager.Instance != null)
-                {
-                    AudioManager.Instance.PlayTurbo();
-                }
+                AudioManager.Instance.PlayTurbo();
             }
-            return;
         }
 
+        if (IsBoosting)
+        {
+            ApplyTurboDrain();
+        }
+    }
+
+    private void ApplyTurboImpulse()
+    {
+        if (TryGetComponent(out Rigidbody rb))
+        {
+            Vector3 boostDir = transform.forward;
+            rb.AddForce(boostDir * turboImpulseForce, ForceMode.Impulse);
+        }
+    }
+
+    private void ApplyTurboDrain()
+    {
         energy = Mathf.Max(0f, energy - drainPerSecond * Time.deltaTime);
         NotifyEnergy();
         if (energy <= 0f) IsBoosting = false;

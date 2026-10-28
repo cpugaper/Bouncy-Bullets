@@ -34,7 +34,7 @@ public class ScoreManager : MonoBehaviour
 
     private void AddScore(int amount)
     {
-        currentScore += amount;
+        currentScore = Mathf.Max(0, currentScore + amount);
         if (scoreUpdatedEventChannel != null) scoreUpdatedEventChannel.RaiseEvent(currentScore);
 
         if (currentScore > highScore)

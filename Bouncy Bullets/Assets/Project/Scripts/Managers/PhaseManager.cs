@@ -16,10 +16,10 @@ public class PhaseManager : MonoBehaviour
     public bool IsSpawning { get; private set; }
     public PhaseConfig CurrentPhase { get; private set; }
     public float CurrentInterval { get; private set; }
+    public static int CurrentPhaseNumber { get; private set; } = 1;
+
 
     private Coroutine phasesCoroutine;
-
-    private int currentPhaseIndex; 
 
     private void OnEnable()
     {
@@ -59,16 +59,18 @@ public class PhaseManager : MonoBehaviour
         for (int i = startIndex; i < phases.Length; i++)
         {
             yield return null; 
+            
+            // The display phase number (1-based), NOT the array index
+            CurrentPhaseNumber = i + 1;
 
-            currentPhaseIndex = i;
             PhaseConfig phase = phases[i];
             CurrentPhase = phase;
             CurrentInterval = phase.GetInterval(0f);
             IsSpawning = false;
 
-            // Raised with the display phase number (1-based), NOT the array index
+         
             if (phaseChangedEventChannel != null)
-                phaseChangedEventChannel.RaiseEvent(i + 1);
+                phaseChangedEventChannel.RaiseEvent(CurrentPhaseNumber);
 
             yield return new WaitForSeconds(transitionDelay);
 

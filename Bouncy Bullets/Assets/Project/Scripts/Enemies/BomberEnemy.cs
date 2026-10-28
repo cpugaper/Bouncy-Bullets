@@ -4,14 +4,18 @@ using UnityEngine;
 public class BomberEnemy : Enemy
 {
     [Header("Explosion Settings")]
-    [SerializeField] private float timeToExplode = 5f;
-    [SerializeField] private int bulletCount = 4;
+    [SerializeField] private float baseTimeToExplode = 5f;
+    [SerializeField] private float minTimeToExplode = 2f;
+    [SerializeField] private int bulletCount = 2;
 
     [Header("References")]
     [SerializeField] private SpawnBulletEventChannelSO spawnBulletEventChannel;
+    [SerializeField] private IntEventChannelSO phaseChangedEventChannel;
 
     private BomberEffect visuals;
     private Coroutine explodeCoroutine;
+
+    private int currentPhase = 1; 
 
     protected override void Move() { }
 
@@ -23,22 +27,32 @@ public class BomberEnemy : Enemy
     private void OnEnable()
     {
         if (explodeCoroutine != null) StopCoroutine(explodeCoroutine);
+        if (phaseChangedEventChannel != null) phaseChangedEventChannel.Subscribe(UpdatePhase);
+
+        currentPhase = PhaseManager.CurrentPhaseNumber > 0 ? PhaseManager.CurrentPhaseNumber : 1;
         explodeCoroutine = StartCoroutine(ExplodeSequence());
     }
 
     private void OnDisable()
     {
         if (explodeCoroutine != null) StopCoroutine(explodeCoroutine);
+        if (phaseChangedEventChannel != null) phaseChangedEventChannel.Unsubscribe(UpdatePhase);
+    }
+
+    private void UpdatePhase(int newPhase)
+    {
+        currentPhase = newPhase;
     }
 
     private IEnumerator ExplodeSequence()
     {
+        float dynamicTimeToExplode = Mathf.Max(minTimeToExplode, baseTimeToExplode - ((currentPhase - 1) * 0.5f));
         float timer = 0f;
 
-        while (timer < timeToExplode)
+        while (timer < dynamicTimeToExplode)
         {
             timer += Time.deltaTime;
-            if (visuals != null) visuals.SetFlashProgress(timer / timeToExplode);
+            if (visuals != null) visuals.SetFlashProgress(timer / dynamicTimeToExplode);
             yield return null;
         }
 

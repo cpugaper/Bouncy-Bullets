@@ -177,9 +177,11 @@ MonoBehaviour:
   enemyDeathEventChannel: {fileID: 11400000, guid: b8fe3f5ff68d0ac4db6d9edc17aea79b, type: 2}
   scoreValue: 5
   addScoreEventChannel: {fileID: 11400000, guid: 16bbf82dd4ef4a04b827b058c79a5199, type: 2}
-  timeToExplode: 5
+  baseTimeToExplode: 5
+  minTimeToExplode: 2
   bulletCount: 2
   spawnBulletEventChannel: {fileID: 11400000, guid: 2b4d87d8822cec44a99e272b5a6caa21, type: 2}
+  phaseChangedEventChannel: {fileID: 11400000, guid: b482cb3f8c62e1f42a24fbf5626e1038, type: 2}
 --- !u!114 &8132031523566570231
 MonoBehaviour:
   m_ObjectHideFlags: 0

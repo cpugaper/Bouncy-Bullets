@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9627bd2098b682489b0ae410723c01a, type: 3}
   m_Name: Phase_3
   m_EditorClassIdentifier: Assembly-CSharp::PhaseConfig
-  duration: 35
+  duration: 30
   startInterval: 2.6
   endInterval: 2.1
   isEndless: 0

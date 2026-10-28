@@ -24,8 +24,16 @@ public class NormalEnemy : Enemy
     {
         if (spawnBulletEventChannel != null)
         {
-            float randomAngle = Random.Range(-40, 40);
-            Quaternion bounceRotation = Quaternion.Euler(0f, randomAngle, 0f);
+            Vector3 shootDirection = Vector3.back;
+
+            if (PlayerController.Instance != null)
+            {
+                Vector3 playerPos = PlayerController.Instance.transform.position;
+                shootDirection = (playerPos - transform.position).normalized;
+                shootDirection.y = 0f;
+            }
+           
+            Quaternion bounceRotation = Quaternion.LookRotation(shootDirection);
             spawnBulletEventChannel.RaiseEvent(BulletType.Bouncy, transform.position, bounceRotation);
         }
 

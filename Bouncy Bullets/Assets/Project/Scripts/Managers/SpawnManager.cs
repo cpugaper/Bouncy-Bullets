@@ -17,6 +17,10 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private float ySpawn = 0.5f;
     [SerializeField] private float spawnInset = 0.5f; // So a moving camera cannot push the enemy out as it appears
 
+    [Header("Anti-Clustering Settings")]
+    [SerializeField] private float minDistanceBetweenEnemies = 2f;
+    [SerializeField] private int maxSpawnAttempts = 10;
+
     [Header("Pool Settings")]
     [SerializeField] private int defaultCapacityPerType = 10;
     [SerializeField] private int maxSizePerType = 20;
@@ -26,6 +30,7 @@ public class SpawnManager : MonoBehaviour
 
     private readonly Dictionary<EnemyType, GameObject> prefabs = new Dictionary<EnemyType, GameObject>();
     private readonly Dictionary<EnemyType, ObjectPool<GameObject>> pools = new Dictionary<EnemyType, ObjectPool<GameObject>>();
+    private readonly HashSet<GameObject> activeEnemies = new HashSet<GameObject>();
 
     private void Awake()
     {
@@ -46,8 +51,16 @@ public class SpawnManager : MonoBehaviour
         ObjectPool<GameObject> pool = null;
         pool = new ObjectPool<GameObject>(
             createFunc: () => CreateEnemyInstance(prefab, pool),
-            actionOnGet: (enemy) => enemy.SetActive(true),
-            actionOnRelease: (enemy) => enemy.SetActive(false),
+            actionOnGet: (enemy) =>
+            {
+                enemy.SetActive(true);
+                activeEnemies.Add(enemy);
+            },
+            actionOnRelease: (enemy) =>
+            {
+                activeEnemies.Remove(enemy);
+                enemy.SetActive(false);
+            },
             actionOnDestroy: (enemy) => Destroy(enemy),
             defaultCapacity: defaultCapacityPerType,
             maxSize: maxSizePerType
@@ -90,21 +103,50 @@ public class SpawnManager : MonoBehaviour
     {
         if (!pools.TryGetValue(type, out ObjectPool<GameObject> pool)) return;
 
-        Vector3 spawnPos = GetSpawnPosition(type);
+        Vector3 spawnPos = GetValidSpawnPosition(type);
         GameObject enemy = pool.Get();
         enemy.transform.SetPositionAndRotation(spawnPos, prefabs[type].transform.rotation);
     }
 
-    private Vector3 GetSpawnPosition(EnemyType type)
+    private Vector3 GetValidSpawnPosition(EnemyType type)
     {
         Rect area = GetSpawnArea();
 
+        for (int i = 0; i < maxSpawnAttempts; i++)
+        {
+            Vector3 candidatePos = GenerateSpawnPosition(type, area);
+
+            if (!IsTooCloseToOtherEnemies(candidatePos))
+            {
+                return candidatePos;
+            }
+        }
+
+        return GenerateSpawnPosition(type, area);
+    }
+
+    private Vector3 GenerateSpawnPosition(EnemyType type, Rect area)
+    {
         switch (type)
         {
             case EnemyType.Normal: return new Vector3(Random.Range(area.xMin, area.xMax), ySpawn, area.yMax);
             case EnemyType.Bomber: return GetRandomPositionAwayFromPlayer(area);
             default: return GetRandomEdgePosition(area);
         }
+    }
+
+    private bool IsTooCloseToOtherEnemies(Vector3 pos)
+    {
+        Vector3 flatPos = new Vector3(pos.x, 0f, pos.z);
+        foreach (var enemy in activeEnemies)
+        {
+            if (enemy == null) continue;
+
+            Vector3 enemyFlatPos = new Vector3(enemy.transform.position.x, 0f, enemy.transform.position.z);
+
+            if (Vector3.Distance(enemyFlatPos, enemyFlatPos) < minDistanceBetweenEnemies) return true;
+        }
+        return false; 
     }
 
     private Rect GetSpawnArea()
