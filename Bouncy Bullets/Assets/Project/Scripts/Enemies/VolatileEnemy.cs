@@ -41,9 +41,9 @@ public class VolatileEnemy : Enemy
 
         if (!hasCalculatedDirection)
         {
-            if (PlayerController.Instance != null)
+            if (PlayerMovement.Instance != null)
             {
-                Vector3 playerPos = PlayerController.Instance.transform.position;
+                Vector3 playerPos = PlayerMovement.Instance.transform.position;
                 direction = (playerPos - transform.position).normalized;
                 hasCalculatedDirection = true;
             }

@@ -26,9 +26,9 @@ public class NormalEnemy : Enemy
         {
             Vector3 shootDirection = Vector3.back;
 
-            if (PlayerController.Instance != null)
+            if (PlayerMovement.Instance != null)
             {
-                Vector3 playerPos = PlayerController.Instance.transform.position;
+                Vector3 playerPos = PlayerMovement.Instance.transform.position;
                 shootDirection = (playerPos - transform.position).normalized;
                 shootDirection.y = 0f;
             }

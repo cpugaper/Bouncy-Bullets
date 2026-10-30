@@ -55,9 +55,9 @@ public class ShooterEnemy : Enemy
         {
             aimTimer += Time.deltaTime;
 
-            if (PlayerController.Instance != null)
+            if (PlayerMovement.Instance != null)
             {
-                Vector3 playerDir = (PlayerController.Instance.transform.position - transform.position).normalized;
+                Vector3 playerDir = (PlayerMovement.Instance.transform.position - transform.position).normalized;
                 playerDir.y = 0f;
                 if (playerDir != Vector3.zero)
                 {

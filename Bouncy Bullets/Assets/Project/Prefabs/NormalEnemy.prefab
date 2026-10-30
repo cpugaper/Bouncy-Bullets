@@ -113,8 +113,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5464704558478058072}
-  - component: {fileID: 8698567318378090158}
   - component: {fileID: 7063638779336664199}
+  - component: {fileID: 8698567318378090158}
   m_Layer: 6
   m_Name: NormalEnemy
   m_TagString: Enemy
@@ -138,24 +138,6 @@ Transform:
   - {fileID: 2648928832149713034}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8698567318378090158
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8786904619722660287}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e5c7ef3829cc014e8df4bc6f003d2a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NormalEnemy
-  enemyType: 0
-  enemyDeathEventChannel: {fileID: 11400000, guid: b8fe3f5ff68d0ac4db6d9edc17aea79b, type: 2}
-  scoreValue: 3
-  addScoreEventChannel: {fileID: 11400000, guid: 16bbf82dd4ef4a04b827b058c79a5199, type: 2}
-  speed: 3
-  spawnBulletEventChannel: {fileID: 11400000, guid: 2b4d87d8822cec44a99e272b5a6caa21, type: 2}
 --- !u!135 &7063638779336664199
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -177,3 +159,21 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.7997279
   m_Center: {x: 0.003996372, y: 0, z: 0}
+--- !u!114 &8698567318378090158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8786904619722660287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e5c7ef3829cc014e8df4bc6f003d2a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NormalEnemy
+  enemyType: 0
+  enemyDeathEventChannel: {fileID: 11400000, guid: b8fe3f5ff68d0ac4db6d9edc17aea79b, type: 2}
+  scoreValue: 3
+  addScoreEventChannel: {fileID: 11400000, guid: 16bbf82dd4ef4a04b827b058c79a5199, type: 2}
+  speed: 3
+  spawnBulletEventChannel: {fileID: 11400000, guid: 2b4d87d8822cec44a99e272b5a6caa21, type: 2}

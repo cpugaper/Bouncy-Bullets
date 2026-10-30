@@ -12,29 +12,21 @@ public class PlayerTurbo : MonoBehaviour
     [SerializeField] private FloatEventChannelSO turboChangedEventChannel; 
     [SerializeField] private GameEventChannelSO runStartedEventChannel;      
 
-    private InputSystem_Actions controls;
     private float energy;
 
     public bool IsBoosting { get; private set; }
     public bool IsFull => energy >= maxEnergy;
     public float SpeedMultiplier => IsBoosting ? speedMultiplier : 1f;
 
-    private void Awake() => controls = new InputSystem_Actions();
-
     private void OnEnable()
     {
-        controls.Player.Enable();
         if (runStartedEventChannel != null) runStartedEventChannel.Subscribe(NotifyEnergy);
     }
 
     private void OnDisable()
     {
-        controls.Player.Disable();
         if (runStartedEventChannel != null) runStartedEventChannel.Unsubscribe(NotifyEnergy);
     }
-
-
-    private void OnDestroy() => controls.Dispose();
 
     void Update()
     {
@@ -45,7 +37,9 @@ public class PlayerTurbo : MonoBehaviour
 
     private void HandleTurbo()
     {
-        if (!IsBoosting && IsFull && controls.Player.Turbo.WasPressedThisFrame())
+        if (PlayerInputManager.Instance == null) return;
+
+        if (!IsBoosting && IsFull && PlayerInputManager.Instance.TurboPressed)
         {
             IsBoosting = true;
             ApplyTurboImpulse();

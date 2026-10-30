@@ -13,9 +13,9 @@ public class HomingBullet : Bullet
 
     private void HomingMovement()
     {
-        if (PlayerController.Instance != null)
+        if (PlayerMovement.Instance != null)
         {
-            Vector3 targetDir = (PlayerController.Instance.transform.position - transform.position).normalized;
+            Vector3 targetDir = (PlayerMovement.Instance.transform.position - transform.position).normalized;
             targetDir.y = 0f;
 
             if (targetDir != Vector3.zero)

@@ -18,8 +18,8 @@ public class CameraFollow : MonoBehaviour
 
         if (playerTransform == null)
         {
-            if (PlayerController.Instance == null) return;
-            playerTransform = PlayerController.Instance.transform;
+            if (PlayerMovement.Instance == null) return;
+            playerTransform = PlayerMovement.Instance.transform;
         }
 
         Vector3 desiredPos = bounds.GetCameraPositionFor(playerTransform.position, baseY);

@@ -1,26 +1,24 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
+    public static PlayerMovement Instance { get; private set; }
+
     [Header("Movement Settings")]
-    public float speed = 10f;
+    [SerializeField] private float speed = 10f;
     [SerializeField] private float initialImpulse = 8f;
 
     [Header("Rotation Settings")]
     [SerializeField] private float baseRotationSpeed = 720f;
     [SerializeField] private GameSettingsSO settings;
 
-    [Header("References")]
+    [Header("Effects")]
+    public ParticleSystem thrusterParticles;
+
     private Rigidbody playerRb;
     private Camera mainCamera;
     private PlayerTilt playerTilt;
-    private InputSystem_Actions controls;
     private PlayerTurbo turbo;
-
-    public static PlayerController Instance { get; private set; }
-
-    [Header("Effects")]
-    public ParticleSystem thrusterParticles;
 
     private void Awake()
     {
@@ -30,12 +28,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
         Instance = this;
-        controls = new InputSystem_Actions();
     }
-
-    void OnEnable() => controls.Player.Enable();
-    void OnDisable() => controls.Disable();
-    void OnDestroy() => controls.Dispose();
 
     void Start()
     {
@@ -62,29 +55,31 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer()
     {
-        Vector2 moveInput = controls.Player.Move.ReadValue<Vector2>();
+        Vector2 moveInput = PlayerInputManager.Instance != null ? PlayerInputManager.Instance.MoveInput : Vector2.zero;
 
         HandleThrusterEffect(turbo != null && turbo.IsBoosting);
 
         Vector3 moveDirection = new Vector3(moveInput.x, 0f, moveInput.y);
         float multiplier = turbo != null ? turbo.SpeedMultiplier : 1f;
         playerRb.AddForce(moveDirection * speed * multiplier);
+
         if (playerTilt != null) playerTilt.ApplyTilt(moveDirection);
     }
 
-    private void HandleThrusterEffect(bool isMoving)
+    private void HandleThrusterEffect(bool isTurboOn)
     {
         if (thrusterParticles == null) return;
         ParticleSystem.EmissionModule emission = thrusterParticles.emission;
-        emission.enabled = isMoving;
+        emission.enabled = isTurboOn;
     }
 
     private void RotatePlayer()
     {
         if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
+        if (PlayerInputManager.Instance == null) return;
 
         float sensitivity = settings != null ? settings.MouseSensitivity : 1f;
-        if (PointerUtils.TryGetAimInfo(controls, mainCamera, transform.position, sensitivity, false, out Vector3 direction, out _))
+        if (PointerUtils.TryGetAimInfo(PlayerInputManager.Instance.Controls, mainCamera, transform.position, sensitivity, false, out Vector3 direction, out _))
         {
             float targetAngleY = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
             Quaternion targetRotation = Quaternion.Euler(0f, targetAngleY, 0f);
@@ -96,7 +91,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Prevents the player from leaving the screen 
     private void ConstrainPlayerPosition()
     {
         ScreenBounds bounds = ScreenBounds.Instance;

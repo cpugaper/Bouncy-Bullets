@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PlayerShield : MonoBehaviour
 {
-    private InputSystem_Actions controls;
     public bool IsShieldActive { get; private set; } = false;
 
     [Header("Shield Settings")]
@@ -11,31 +10,26 @@ public class PlayerShield : MonoBehaviour
     [SerializeField] private float shieldCooldown = 15f;
     [SerializeField] private float warningDuration = 2f;
 
-    private ShieldEffect shieldVisual;
-    private float nextShieldTime = 0f;
-
     [Header("Event Channels")]
     [SerializeField] private GameEventChannelSO shieldActivatedEventChannel;
     [SerializeField] private GameEventChannelSO shieldDeactivatedEventChannel;
     [SerializeField] private BoolEventChannelSO shieldReadyEventChannel;
     [SerializeField] private FloatEventChannelSO shieldCooldownStartedEventChannel;
 
+    private ShieldEffect shieldVisual;
+    private float nextShieldTime = 0f;
+
     private void Awake()
     {
-        controls = new InputSystem_Actions();
         shieldVisual = GetComponent<ShieldEffect>();
-    }
-
-    void OnEnable()
-    {
-        controls.Player.Enable();
     }
 
     void Update()
     {
         if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
+        if (PlayerInputManager.Instance == null) return;
 
-        if (controls.Player.Shield.triggered && !IsShieldActive && Time.time >= nextShieldTime)
+        if (PlayerInputManager.Instance.ShieldPressed && !IsShieldActive && Time.time >= nextShieldTime)
         {
             StartCoroutine(ActivateShield());
         }
@@ -70,10 +64,5 @@ public class PlayerShield : MonoBehaviour
     public static bool HasActiveShield(Collider player)
     {
         return player.TryGetComponent(out PlayerShield shield) && shield.IsShieldActive;
-    }
-
-    void OnDisable()
-    {
-        controls.Player.Disable();
     }
 }

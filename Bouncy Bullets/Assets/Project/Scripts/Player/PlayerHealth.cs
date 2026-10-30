@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    private PlayerShield shield;
-
     [Header("Event Channels")]
     [SerializeField] private PositionEventChannelSO playerDeathEventChannel;
+
+    private PlayerShield shield;
 
     private void Start()
     {

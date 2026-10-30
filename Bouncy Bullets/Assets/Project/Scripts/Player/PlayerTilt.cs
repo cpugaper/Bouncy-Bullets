@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class PlayerTilt : MonoBehaviour
 {
-    public Transform modelTransform; 
+    [Header("Settings")]
     [SerializeField] private float maxTiltAngle = 15f;
-    [SerializeField] private float tiltSpeed = 10f; 
+    [SerializeField] private float tiltSpeed = 10f;
+
+    [Header("References")]
+    [SerializeField] private Transform modelTransform;
 
     public void ApplyTilt(Vector3 worldMoveDir)
     {

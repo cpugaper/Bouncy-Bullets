@@ -32,6 +32,7 @@ public class PickupSpawner : MonoBehaviour
     private ObjectPool<ScorePickup> scorePool;
     private ObjectPool<ShockwavePickup> shockwavePool;
 
+    private Coroutine spawnCoroutine;
     private WaitForSeconds wait;
     private int currentPhaseNumber = 1;
 
@@ -51,10 +52,18 @@ public class PickupSpawner : MonoBehaviour
         if (phaseChangedEventChannel != null) phaseChangedEventChannel.Unsubscribe(OnPhaseChanged);
     }
 
+    private void Start()
+    {
+        spawnCoroutine = StartCoroutine(SpawnRoutine());
+    }
+
     private void OnPhaseChanged(int phaseNumber)
     {
         currentPhaseNumber = phaseNumber;
         SetPhase(phaseNumber);
+
+        if (spawnCoroutine != null) StopCoroutine(spawnCoroutine);
+        spawnCoroutine = StartCoroutine(SpawnRoutine());
     }
 
     private void InitializePools()
@@ -91,7 +100,7 @@ public class PickupSpawner : MonoBehaviour
         wait = new WaitForSeconds(interval);
     }
 
-    private IEnumerator Start()
+    private IEnumerator SpawnRoutine()
     {
         while (true)
         {
@@ -107,7 +116,7 @@ public class PickupSpawner : MonoBehaviour
 
     private void TrySpawn()
     {
-        if (PlayerController.Instance == null || ScreenBounds.Instance == null) return;
+        if (PlayerMovement.Instance == null || ScreenBounds.Instance == null) return;
 
         Rect view = ScreenBounds.Instance.GetVisibleArea();
         Vector3 pos = new Vector3(
@@ -116,7 +125,7 @@ public class PickupSpawner : MonoBehaviour
             Random.Range(view.yMin + edgePadding, view.yMax - edgePadding)
         );
 
-        Vector3 playerPos = PlayerController.Instance.transform.position;
+        Vector3 playerPos = PlayerMovement.Instance.transform.position;
         if (Vector3.Distance(pos, playerPos) < minDistanceFromPlayer) return;
 
         SpawnWeightedPickup(pos);
@@ -125,13 +134,13 @@ public class PickupSpawner : MonoBehaviour
     private void SpawnWeightedPickup(Vector3 spawnPosition)
     {
         bool isTurboFull = false;
-        if (PlayerController.Instance.TryGetComponent(out PlayerTurbo turbo) && turbo.IsFull)
+        if (PlayerMovement.Instance.TryGetComponent(out PlayerTurbo turbo) && turbo.IsFull)
         {
             isTurboFull = true;
         }
 
         bool isShockwaveFull = false;
-        if (PlayerController.Instance.TryGetComponent(out PlayerShockwave shockwaveSystem) && shockwaveSystem.IsFull)
+        if (PlayerMovement.Instance.TryGetComponent(out PlayerShockwave shockwaveSystem) && shockwaveSystem.IsFull)
         {
             isShockwaveFull = true;
         }

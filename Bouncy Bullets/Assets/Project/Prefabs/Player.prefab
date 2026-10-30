@@ -11,11 +11,12 @@ GameObject:
   - component: {fileID: 2877943869656496210}
   - component: {fileID: 4846134315935625312}
   - component: {fileID: 784184703098181174}
+  - component: {fileID: 6387182413375492936}
   - component: {fileID: 5744724648072669041}
+  - component: {fileID: 5264749518813902279}
   - component: {fileID: 2891958134109996685}
   - component: {fileID: 5563237901011355485}
   - component: {fileID: 8086578273297130876}
-  - component: {fileID: 5264749518813902279}
   - component: {fileID: 709105735313305951}
   - component: {fileID: 840498591790175579}
   - component: {fileID: -5957311627573846725}
@@ -93,6 +94,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.8306898, y: 0.70500255, z: 2.0526052}
   m_Center: {x: 0.016931042, y: 0.053635955, z: 0.124032855}
+--- !u!114 &6387182413375492936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5579297609473609503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdd28e81def921c4d8d4f59b3c0bbb78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInputManager
 --- !u!114 &5744724648072669041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,6 +123,21 @@ MonoBehaviour:
   baseRotationSpeed: 720
   settings: {fileID: 11400000, guid: 1750f363ed00d8240bce121e9e640376, type: 2}
   thrusterParticles: {fileID: 7923072854390042732}
+--- !u!114 &5264749518813902279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5579297609473609503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6982b8dbfdd2bfe489a020c7ada25d59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerTilt
+  maxTiltAngle: 15
+  tiltSpeed: 10
+  modelTransform: {fileID: 7629416895244681172}
 --- !u!114 &2891958134109996685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShoot
   fireRate: 0.5
-  bulletPoolManager: {fileID: 0}
+  spawnMargin: 1.5
   shootEventChannel: {fileID: 11400000, guid: af95b10fc6d5d864899fa356d5a003d0, type: 2}
   spawnBulletEventChannel: {fileID: 11400000, guid: 2b4d87d8822cec44a99e272b5a6caa21, type: 2}
 --- !u!114 &8086578273297130876
@@ -158,21 +186,6 @@ MonoBehaviour:
   shieldDeactivatedEventChannel: {fileID: 11400000, guid: 08f948482e590c24596dfa636f931038, type: 2}
   shieldReadyEventChannel: {fileID: 11400000, guid: 4307e571d3c058748b66cbd5dda8a6fe, type: 2}
   shieldCooldownStartedEventChannel: {fileID: 11400000, guid: 23bbda631fa3993418f64334ced6c965, type: 2}
---- !u!114 &5264749518813902279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5579297609473609503}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6982b8dbfdd2bfe489a020c7ada25d59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerTilt
-  modelTransform: {fileID: 7629416895244681172}
-  maxTiltAngle: 15
-  tiltSpeed: 10
 --- !u!114 &709105735313305951
 MonoBehaviour:
   m_ObjectHideFlags: 0

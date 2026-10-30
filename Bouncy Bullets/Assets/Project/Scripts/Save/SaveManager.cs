@@ -58,6 +58,8 @@ public class SaveManager : MonoBehaviour
         data.savedScore = 0;
         data.savedPhaseIndex = 0;
         runScore = 0;
+
+        WriteToDisk();
     }
 
     private void HandleScoreUpdated(int score) => runScore = score;

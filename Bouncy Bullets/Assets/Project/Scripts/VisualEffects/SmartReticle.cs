@@ -23,12 +23,7 @@ public class SmartReticle : MonoBehaviour
     [SerializeField] private GameSettingsSO settings;
 
     private Camera mainCamera;
-    private InputSystem_Actions controls;
     private bool isPlaying = true;
-
-    private void Awake() => controls = new InputSystem_Actions();
-    private void OnEnable() => controls.Player.Enable();
-    private void OnDisable() => controls.Disable();
 
     private void Start()
     {
@@ -47,8 +42,6 @@ public class SmartReticle : MonoBehaviour
     {
         if (GameManager.Instance != null)
             GameManager.Instance.OnGameStateChanged -= HandleGameStateChanged;
-
-        controls.Dispose();
     }
 
     private void HandleGameStateChanged(GameState state)
@@ -62,27 +55,32 @@ public class SmartReticle : MonoBehaviour
         if ( !isPlaying || playerTransform == null || mainCamera == null) return;
         
         Vector3 playerPos = playerTransform.position;
-
         float sensitivity = settings != null ? settings.MouseSensitivity : 1f;
-        if (!PointerUtils.TryGetAimInfo(controls, mainCamera, playerPos, sensitivity, true, out Vector3 direction, out float distance))
+
+        if (!PointerUtils.TryGetAimInfo(PlayerInputManager.Instance.Controls, mainCamera, playerPos, sensitivity, true, out Vector3 direction, out float distance))
             return;
 
-        UpdateReticlePosition(playerPos, direction, distance);
+        bool isEnemyTargeted = EvaluateTarget(playerPos, direction, distance);
+        UpdateReticlePosition(playerPos, direction, distance, isEnemyTargeted);
     }
 
-    // Detect enemies and move the reticle
-    private void UpdateReticlePosition(Vector3 playerPos, Vector3 direction, float distance)
+    private bool EvaluateTarget(Vector3 playerPos, Vector3 direction, float distance)
+    {
+        bool isEnemyTargeted = Physics.SphereCast(playerPos, sphereCastRadius, direction, out _, distance, enemyLayer);
+
+        SetMaterial(isEnemyTargeted ? lockedMaterial : normalMaterial);
+
+        return isEnemyTargeted;
+    }
+
+    private void UpdateReticlePosition(Vector3 playerPos, Vector3 direction, float distance, bool isEnemyTargeted)
     {
         Vector3 targetReticlePos = playerPos + direction * distance;
-
-        bool isEnemyTargeted = Physics.SphereCast(playerPos, sphereCastRadius, direction, out _, distance, enemyLayer);
 
         float heightOffset = isEnemyTargeted ? lockedHeightOffset : normalHeightOffset;
         targetReticlePos.y = playerPos.y + heightOffset;
 
         transform.position = Vector3.Lerp(transform.position, targetReticlePos, Time.deltaTime * smoothSpeed);
-
-        SetMaterial(isEnemyTargeted ? lockedMaterial : normalMaterial);
     }
 
     private void SetMaterial(Material material)

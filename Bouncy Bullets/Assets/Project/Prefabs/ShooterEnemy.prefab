@@ -660,8 +660,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3598423039020577240}
-  - component: {fileID: 1630382595791363427}
   - component: {fileID: 1835993559208711540}
+  - component: {fileID: 1630382595791363427}
   m_Layer: 6
   m_Name: ShooterEnemy
   m_TagString: Enemy
@@ -685,6 +685,27 @@ Transform:
   - {fileID: 1775176132242999162}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1835993559208711540
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9024942070046077704}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.3166862
+  m_Center: {x: -0.013611317, y: 0.045387745, z: 0.01361227}
 --- !u!114 &1630382595791363427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,24 +728,3 @@ MonoBehaviour:
   waitAfterShot: 1.3
   fireOffset: 2
   spawnBulletEventChannel: {fileID: 11400000, guid: 2b4d87d8822cec44a99e272b5a6caa21, type: 2}
---- !u!135 &1835993559208711540
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9024942070046077704}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 1.3166862
-  m_Center: {x: -0.013611317, y: 0.045387745, z: 0.01361227}

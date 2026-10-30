@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class SpawnManager : MonoBehaviour
+public class EnemySpawnManager : MonoBehaviour
 {
     [Header("Enemy Prefabs")]
     [SerializeField] private GameObject normalEnemyPrefab;
@@ -144,7 +144,7 @@ public class SpawnManager : MonoBehaviour
 
             Vector3 enemyFlatPos = new Vector3(enemy.transform.position.x, 0f, enemy.transform.position.z);
 
-            if (Vector3.Distance(enemyFlatPos, enemyFlatPos) < minDistanceBetweenEnemies) return true;
+            if (Vector3.Distance(flatPos, enemyFlatPos) < minDistanceBetweenEnemies) return true;
         }
         return false; 
     }
@@ -161,7 +161,7 @@ public class SpawnManager : MonoBehaviour
 
     private Vector3 GetRandomPositionAwayFromPlayer(Rect area)
     {
-        Vector3 playerPos = PlayerController.Instance.transform.position;
+        Vector3 playerPos = PlayerMovement.Instance.transform.position;
 
         Vector2 randomDir = Random.insideUnitCircle.normalized;
         float randomDistance = Random.Range(minDistanceFromPlayer, maxDistanceFromPlayer);

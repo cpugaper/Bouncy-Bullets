@@ -34,6 +34,8 @@ public class PhaseConfig : ScriptableObject
 
     public EnemyType PickEnemy()
     {
+        if (enemies == null || enemies.Length == 0) return default;
+
         float total = 0f;
         foreach (EnemyEntry entry in enemies) total += entry.weight;
 

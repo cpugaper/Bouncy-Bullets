@@ -15,43 +15,23 @@ public class PlayerShockwave : MonoBehaviour
     [Header("Visual Reference")]
     [SerializeField] private Transform shockwaveVisualQuad;
 
-    private InputSystem_Actions controls;
     private int currentCharges = 0;
     private bool isExploding = false;
 
     public bool HasCharges => currentCharges > 0;
     public bool IsFull => currentCharges >= maxCharges;
 
-    private void Awake()
-    {
-        controls = new InputSystem_Actions();
-    }
-
     private void Start()
     {
         NotifyUI();
     }
 
-    private void OnEnable()
-    {
-        controls.Player.Enable();
-    }
-
-    private void OnDisable()
-    {
-        controls.Player.Disable();
-    }
-
-    private void OnDestroy()
-    {
-        controls.Dispose();
-    }
-
     private void Update()
     {
         if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
+        if (PlayerInputManager.Instance == null) return;
 
-        if (HasCharges && !isExploding && controls.Player.ShockWave.WasPressedThisFrame())
+        if (HasCharges && !isExploding && PlayerInputManager.Instance.ShockwavePressed)
         {
             UseShockwave();
         }

@@ -122,11 +122,30 @@ public class UIManager : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(gameOverFirstSelected);
     }
 
-    public void OnResumeButtonPressed() => GameManager.Instance.ResumeGame();
-    public void OnRestartButtonPressed() => GameManager.Instance.RestartGame();
-    public void OnQuitButtonPressed() => GameManager.Instance.QuitGame();
-    public void OnNewGameButtonPressed() => GameManager.Instance.NewGame();
-    public void OnContinueButtonPressed() => GameManager.Instance.ContinueGame();
+    public void OnResumeButtonPressed()
+    {
+        if (GameManager.Instance != null) GameManager.Instance.ResumeGame();
+    }
+
+    public void OnRestartButtonPressed()
+    {
+        if (GameManager.Instance != null) GameManager.Instance.RestartGame();
+    }
+
+    public void OnQuitButtonPressed()
+    {
+        if (GameManager.Instance != null) GameManager.Instance.QuitGame();
+    }
+
+    public void OnNewGameButtonPressed()
+    {
+        if (GameManager.Instance != null) GameManager.Instance.NewGame();
+    }
+
+    public void OnContinueButtonPressed()
+    {
+        if (GameManager.Instance != null) GameManager.Instance.ContinueGame();
+    }
 
     public void OpenRules()
     {
