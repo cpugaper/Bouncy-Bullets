@@ -7,7 +7,7 @@ public class SmartReticle : MonoBehaviour
     [SerializeField] private MeshRenderer reticleRenderer;
 
     [Header("Materials")]
-    [SerializeField] private Material normalMaterial; 
+    [SerializeField] private Material normalMaterial;
     [SerializeField] private Material lockedMaterial;
 
     [Header("Aim Settings")]
@@ -52,8 +52,8 @@ public class SmartReticle : MonoBehaviour
 
     private void LateUpdate()
     {
-        if ( !isPlaying || playerTransform == null || mainCamera == null) return;
-        
+        if (!isPlaying || playerTransform == null || mainCamera == null) return;
+
         Vector3 playerPos = playerTransform.position;
         float sensitivity = settings != null ? settings.MouseSensitivity : 1f;
 

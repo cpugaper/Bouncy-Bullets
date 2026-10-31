@@ -26,7 +26,7 @@ public static class PointerUtils
         return false;
     }
 
-    public static bool TryGetAimInfo(InputSystem_Actions controls, Camera camera, Vector3 playerPos, 
+    public static bool TryGetAimInfo(InputSystem_Actions controls, Camera camera, Vector3 playerPos,
         float sensitivityMultiplier, bool advanceCursor, out Vector3 direction, out float distance)
     {
         direction = Vector3.zero;
@@ -59,7 +59,7 @@ public static class PointerUtils
         else
         {
             screenPos = controls.Player.Look.ReadValue<Vector2>();
-            cursorScreenPos = screenPos;   
+            cursorScreenPos = screenPos;
             isInitialized = true;
         }
 

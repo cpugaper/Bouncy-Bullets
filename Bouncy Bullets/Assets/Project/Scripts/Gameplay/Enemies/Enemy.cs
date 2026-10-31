@@ -1,14 +1,6 @@
 using System;
 using UnityEngine;
 
-public enum EnemyType
-{
-    Normal,
-    Shooter, 
-    Bomber,
-    Volatile
-}
-
 public abstract class Enemy : MonoBehaviour
 {
     [Header("Enemy Configuration")]

@@ -2,12 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public enum BulletType
-{
-    Bouncy,
-    Homing
-}
-
 public class Bullet : MonoBehaviour
 {
     [Header("Bullet Settings")]
