@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WarningArea_mat
+  m_Name: Shockwave_mat
   m_Shader: {fileID: -6465566751694194690, guid: 0731a05a89ce2f9468065003f27695b5, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -44,7 +44,7 @@ Material:
     - _QueueOffset: 0
     - _RimWidth: 0.03
     m_Colors:
-    - _Color: {r: 2, g: 0, b: 0, a: 1}
+    - _Color: {r: 0.06847818, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7439023251300934947

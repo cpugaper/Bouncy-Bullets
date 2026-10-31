@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2153560223577519480}
   - component: {fileID: 4022118663564302442}
   - component: {fileID: 2293271278052005295}
-  - component: {fileID: 5761931053619673690}
+  - component: {fileID: 1310721659681315819}
   m_Layer: 0
   m_Name: ScorePickup
   m_TagString: Untagged
@@ -113,7 +113,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5761931053619673690
+--- !u!114 &1310721659681315819
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
