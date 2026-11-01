@@ -3,7 +3,6 @@ using UnityEngine;
 public class SmartReticle : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Transform playerTransform;
     [SerializeField] private MeshRenderer reticleRenderer;
 
     [Header("Materials")]
@@ -23,6 +22,7 @@ public class SmartReticle : MonoBehaviour
     [SerializeField] private GameSettingsSO settings;
 
     private Camera mainCamera;
+    private Transform playerTransform;
     private bool isPlaying = true;
 
     private void Start()
@@ -52,7 +52,13 @@ public class SmartReticle : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!isPlaying || playerTransform == null || mainCamera == null) return;
+        if (!isPlaying || mainCamera == null) return;
+
+        if (playerTransform == null)
+        {
+            if (PlayerMovement.Instance == null) return;
+            playerTransform = PlayerMovement.Instance.transform;
+        }
 
         Vector3 playerPos = playerTransform.position;
         float sensitivity = settings != null ? settings.MouseSensitivity : 1f;

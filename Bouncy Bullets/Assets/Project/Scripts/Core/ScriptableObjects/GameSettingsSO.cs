@@ -7,6 +7,10 @@ public class GameSettingsSO : ScriptableObject
     [SerializeField, Range(0f, 1f)] private float defaultVolume = 0.75f;
     [SerializeField] private float defaultSensitivity = 1f;
 
+    [Header("Sensitivity Range")]
+    [SerializeField, Min(0.01f)] private float minSensitivity = 0.1f;
+    [SerializeField, Min(0.01f)] private float maxSensitivity = 3f;
+
     private const string MusicKey = "MusicVolume";
     private const string SfxKey = "SFXVolume";
     private const string SensitivityKey = "MouseSensitivity";
@@ -15,12 +19,17 @@ public class GameSettingsSO : ScriptableObject
     public float SfxVolume { get; private set; }
     public float MouseSensitivity { get; private set; }
 
+    public float MinSensitivity => minSensitivity;
+    public float MaxSensitivity => maxSensitivity;
+
     private void OnEnable()
     {
         MusicVolume = PlayerPrefs.GetFloat(MusicKey, defaultVolume);
         SfxVolume = PlayerPrefs.GetFloat(SfxKey, defaultVolume);
-        MouseSensitivity = PlayerPrefs.GetFloat(SensitivityKey, defaultSensitivity);
+        MouseSensitivity = ClampSensitivity(PlayerPrefs.GetFloat(SensitivityKey, defaultSensitivity));
     }
+
+    private void OnValidate() => maxSensitivity = Mathf.Max(maxSensitivity, minSensitivity);
 
     public void SetMusicVolume(float value)
     {
@@ -36,9 +45,11 @@ public class GameSettingsSO : ScriptableObject
 
     public void SetSensitivity(float value)
     {
-        MouseSensitivity = value;
-        PlayerPrefs.SetFloat(SensitivityKey, value);
+        MouseSensitivity = ClampSensitivity(value);
+        PlayerPrefs.SetFloat(SensitivityKey, MouseSensitivity);
     }
 
     public void Save() => PlayerPrefs.Save();
+
+    private float ClampSensitivity(float value) => Mathf.Clamp(value, minSensitivity, maxSensitivity);
 }

@@ -16,6 +16,9 @@ public class PauseMenuUI : MonoBehaviour
 
     private void OnEnable()
     {
+        sensitivitySlider.minValue = settings.MinSensitivity;
+        sensitivitySlider.maxValue = settings.MaxSensitivity;
+
         musicSlider.SetValueWithoutNotify(settings.MusicVolume);
         sfxSlider.SetValueWithoutNotify(settings.SfxVolume);
         sensitivitySlider.SetValueWithoutNotify(settings.MouseSensitivity);
