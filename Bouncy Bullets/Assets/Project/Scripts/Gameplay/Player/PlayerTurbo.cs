@@ -1,91 +1,95 @@
 using UnityEngine;
+using Game.Core;
 
-public class PlayerTurbo : MonoBehaviour
+namespace Game.Gameplay
 {
-    [Header("Turbo Settings")]
-    [SerializeField] private float maxEnergy = 100f;
-    [SerializeField] private float drainPerSecond = 50f;
-    [SerializeField] private float speedMultiplier = 2f;
-    [SerializeField] private float turboImpulseForce = 15f;
-
-    [Header("Event Channels")]
-    [SerializeField] private FloatEventChannelSO turboChangedEventChannel; 
-    [SerializeField] private GameEventChannelSO runStartedEventChannel;      
-
-    private float energy;
-    private InputReader input;
-
-    public bool IsBoosting { get; private set; }
-    public bool IsFull => energy >= maxEnergy;
-    public float SpeedMultiplier => IsBoosting ? speedMultiplier : 1f;
-
-    private void OnEnable()
+    public class PlayerTurbo : MonoBehaviour
     {
-        if (runStartedEventChannel != null) runStartedEventChannel.Subscribe(NotifyEnergy);
-    }
+        [Header("Turbo Settings")]
+        [SerializeField] private float maxEnergy = 100f;
+        [SerializeField] private float drainPerSecond = 50f;
+        [SerializeField] private float speedMultiplier = 2f;
+        [SerializeField] private float turboImpulseForce = 15f;
 
-    private void OnDisable()
-    {
-        if (runStartedEventChannel != null) runStartedEventChannel.Unsubscribe(NotifyEnergy);
-    }
+        [Header("Event Channels")]
+        [SerializeField] private FloatEventChannelSO turboChangedEventChannel;
+        [SerializeField] private GameEventChannelSO runStartedEventChannel;
 
-    private void Start()
-    {
-        input = InputReader.Instance;
-    }
+        private float energy;
+        private InputReader input;
 
-    void Update()
-    {
-        HandleTurbo();
-    }
+        public bool IsBoosting { get; private set; }
+        public bool IsFull => energy >= maxEnergy;
+        public float SpeedMultiplier => IsBoosting ? speedMultiplier : 1f;
 
-    private void HandleTurbo()
-    {
-        if (!IsBoosting && IsFull && input.TurboPressed)
+        private void OnEnable()
         {
-            IsBoosting = true;
-            ApplyTurboImpulse();
+            if (runStartedEventChannel != null) runStartedEventChannel.Subscribe(NotifyEnergy);
+        }
 
-            if (AudioManager.Instance != null)
+        private void OnDisable()
+        {
+            if (runStartedEventChannel != null) runStartedEventChannel.Unsubscribe(NotifyEnergy);
+        }
+
+        private void Start()
+        {
+            input = InputReader.Instance;
+        }
+
+        void Update()
+        {
+            HandleTurbo();
+        }
+
+        private void HandleTurbo()
+        {
+            if (!IsBoosting && IsFull && input.TurboPressed)
             {
-                AudioManager.Instance.PlayTurbo();
+                IsBoosting = true;
+                ApplyTurboImpulse();
+
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlayTurbo();
+                }
+            }
+
+            if (IsBoosting)
+            {
+                ApplyTurboDrain();
             }
         }
 
-        if (IsBoosting)
+        private void ApplyTurboImpulse()
         {
-            ApplyTurboDrain();
+            if (TryGetComponent(out Rigidbody rb))
+            {
+                Vector3 boostDir = transform.forward;
+                rb.AddForce(boostDir * turboImpulseForce, ForceMode.Impulse);
+            }
         }
-    }
 
-    private void ApplyTurboImpulse()
-    {
-        if (TryGetComponent(out Rigidbody rb))
+        private void ApplyTurboDrain()
         {
-            Vector3 boostDir = transform.forward;
-            rb.AddForce(boostDir * turboImpulseForce, ForceMode.Impulse);
+            energy = Mathf.Max(0f, energy - drainPerSecond * Time.deltaTime);
+            NotifyEnergy();
+            if (energy <= 0f) IsBoosting = false;
         }
-    }
 
-    private void ApplyTurboDrain()
-    {
-        energy = Mathf.Max(0f, energy - drainPerSecond * Time.deltaTime);
-        NotifyEnergy();
-        if (energy <= 0f) IsBoosting = false;
-    }
+        public bool TryAddEnergy(float amount)
+        {
+            if (IsFull || IsBoosting) return false;
 
-    public bool TryAddEnergy(float amount)
-    {
-        if (IsFull || IsBoosting) return false;
-
-        energy = Mathf.Min(maxEnergy, energy + amount);
-        NotifyEnergy();
-        return true;
-    }
+            energy = Mathf.Min(maxEnergy, energy + amount);
+            NotifyEnergy();
+            return true;
+        }
 
 
-    private void NotifyEnergy()
-    {
-        if (turboChangedEventChannel != null) turboChangedEventChannel.RaiseEvent(energy / maxEnergy);
+        private void NotifyEnergy()
+        {
+            if (turboChangedEventChannel != null) turboChangedEventChannel.RaiseEvent(energy / maxEnergy);
+        }
     }
 }

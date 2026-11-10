@@ -1,24 +1,27 @@
 using UnityEngine;
 
-public class PlayerTilt : MonoBehaviour
+namespace Game.Gameplay
 {
-    [Header("Settings")]
-    [SerializeField] private float maxTiltAngle = 15f;
-    [SerializeField] private float tiltSpeed = 10f;
-
-    [Header("References")]
-    [SerializeField] private Transform modelTransform;
-
-    public void ApplyTilt(Vector3 worldMoveDir)
+    public class PlayerTilt : MonoBehaviour
     {
-        if (modelTransform == null) return;
-        Vector3 localMoveDir = transform.InverseTransformDirection(worldMoveDir);
+        [Header("Settings")]
+        [SerializeField] private float maxTiltAngle = 15f;
+        [SerializeField] private float tiltSpeed = 10f;
 
-        float targetZAngle = -localMoveDir.x * maxTiltAngle;
-        float targetXAngle = localMoveDir.z * maxTiltAngle;
+        [Header("References")]
+        [SerializeField] private Transform modelTransform;
 
-        Quaternion targetRotation = Quaternion.Euler(targetXAngle, 0f, targetZAngle);
+        public void ApplyTilt(Vector3 worldMoveDir)
+        {
+            if (modelTransform == null) return;
+            Vector3 localMoveDir = transform.InverseTransformDirection(worldMoveDir);
 
-        modelTransform.localRotation = Quaternion.Slerp(modelTransform.localRotation, targetRotation, Time.deltaTime * tiltSpeed);
+            float targetZAngle = -localMoveDir.x * maxTiltAngle;
+            float targetXAngle = localMoveDir.z * maxTiltAngle;
+
+            Quaternion targetRotation = Quaternion.Euler(targetXAngle, 0f, targetZAngle);
+
+            modelTransform.localRotation = Quaternion.Slerp(modelTransform.localRotation, targetRotation, Time.deltaTime * tiltSpeed);
+        }
     }
 }

@@ -1,35 +1,39 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Game.Core;
 
-public class TurboUI : MonoBehaviour
+namespace Game.UI
 {
-    [SerializeField] private Image fillImage;
-    [SerializeField, Min(0.1f)] private float fillSpeed = 0.8f;
-
-    [Header("Event Channels")]
-    [SerializeField] private FloatEventChannelSO turboChangedEventChannel;
-
-    private float targetFill;
-
-    private void Awake()
+    public class TurboUI : MonoBehaviour
     {
-        fillImage.fillAmount = 0f;  
-    }
+        [SerializeField] private Image fillImage;
+        [SerializeField, Min(0.1f)] private float fillSpeed = 0.8f;
 
-    private void OnEnable()
-    {
-        if (turboChangedEventChannel != null) turboChangedEventChannel.Subscribe(SetTarget);
-    }
+        [Header("Event Channels")]
+        [SerializeField] private FloatEventChannelSO turboChangedEventChannel;
 
-    private void OnDisable()
-    {
-        if (turboChangedEventChannel != null) turboChangedEventChannel.Unsubscribe(SetTarget);
-    }
+        private float targetFill;
 
-    private void SetTarget(float normalized) => targetFill = normalized;
+        private void Awake()
+        {
+            fillImage.fillAmount = 0f;
+        }
 
-    private void Update()
-    {
-        fillImage.fillAmount = Mathf.MoveTowards(fillImage.fillAmount, targetFill, fillSpeed * Time.deltaTime);
+        private void OnEnable()
+        {
+            if (turboChangedEventChannel != null) turboChangedEventChannel.Subscribe(SetTarget);
+        }
+
+        private void OnDisable()
+        {
+            if (turboChangedEventChannel != null) turboChangedEventChannel.Unsubscribe(SetTarget);
+        }
+
+        private void SetTarget(float normalized) => targetFill = normalized;
+
+        private void Update()
+        {
+            fillImage.fillAmount = Mathf.MoveTowards(fillImage.fillAmount, targetFill, fillSpeed * Time.deltaTime);
+        }
     }
 }

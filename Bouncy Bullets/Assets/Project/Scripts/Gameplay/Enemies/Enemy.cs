@@ -1,78 +1,82 @@
 using System;
 using UnityEngine;
+using Game.Core;
 
-public abstract class Enemy : MonoBehaviour
+namespace Game.Gameplay
 {
-    [Header("Event Channels")]
-    [SerializeField] protected PositionEventChannelSO enemyDeathEventChannel;
-    [SerializeField] protected IntEventChannelSO addScoreEventChannel;
-
-    [Header("Score Settings")]
-    [SerializeField] protected int scoreValue = 1;
-
-    private Action onDespawn;
-
-    public void SetDespawnCallback(Action callback)
+    public abstract class Enemy : MonoBehaviour
     {
-        onDespawn = callback;
-    }
+        [Header("Event Channels")]
+        [SerializeField] protected PositionEventChannelSO enemyDeathEventChannel;
+        [SerializeField] protected IntEventChannelSO addScoreEventChannel;
 
-    protected virtual void Update()
-    {
-        Move();
-        CheckBounds();
-    }
+        [Header("Score Settings")]
+        [SerializeField] protected int scoreValue = 1;
 
-    protected abstract void Move();
+        private Action onDespawn;
 
-    protected virtual void CheckBounds()
-    {
-        Rect view = ScreenBounds.Instance.GetVisibleArea();
-        Vector3 pos = transform.position;
-        bool isOutOfBounds = pos.x < view.xMin || pos.x > view.xMax || pos.z < view.yMin || pos.z > view.yMax;
-
-        if (isOutOfBounds)
+        public void SetDespawnCallback(Action callback)
         {
-            OnExitScreen();
-        }
-    }
-
-    protected virtual void OnExitScreen()
-    {
-        ReturnToPool();
-    }
-
-    protected virtual void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("BouncyBullet") || (other.CompareTag("Player") && PlayerShield.HasActiveShield(other)))
-        {
-            Die();
-        }
-    }
-
-    public virtual void Die()
-    {
-        if (!gameObject.activeInHierarchy) return;
-
-        if (enemyDeathEventChannel != null)
-        {
-            enemyDeathEventChannel.RaiseEvent(transform.position);
+            onDespawn = callback;
         }
 
-        if (addScoreEventChannel != null)
+        protected virtual void Update()
         {
-            addScoreEventChannel.RaiseEvent(scoreValue);
+            Move();
+            CheckBounds();
         }
 
-        ReturnToPool();
-    }
+        protected abstract void Move();
 
-    protected void ReturnToPool()
-    {
-        onDespawn?.Invoke();
-        if (onDespawn == null)
+        protected virtual void CheckBounds()
         {
-            gameObject.SetActive(false);
-        }     
+            Rect view = ScreenBounds.Instance.GetVisibleArea();
+            Vector3 pos = transform.position;
+            bool isOutOfBounds = pos.x < view.xMin || pos.x > view.xMax || pos.z < view.yMin || pos.z > view.yMax;
+
+            if (isOutOfBounds)
+            {
+                OnExitScreen();
+            }
+        }
+
+        protected virtual void OnExitScreen()
+        {
+            ReturnToPool();
+        }
+
+        protected virtual void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("BouncyBullet") || (other.CompareTag("Player") && PlayerShield.HasActiveShield(other)))
+            {
+                Die();
+            }
+        }
+
+        public virtual void Die()
+        {
+            if (!gameObject.activeInHierarchy) return;
+
+            if (enemyDeathEventChannel != null)
+            {
+                enemyDeathEventChannel.RaiseEvent(transform.position);
+            }
+
+            if (addScoreEventChannel != null)
+            {
+                addScoreEventChannel.RaiseEvent(scoreValue);
+            }
+
+            ReturnToPool();
+        }
+
+        protected void ReturnToPool()
+        {
+            onDespawn?.Invoke();
+            if (onDespawn == null)
+            {
+                gameObject.SetActive(false);
+            }
+        }
     }
 }

@@ -1,82 +1,86 @@
 using System.Collections;
 using UnityEngine;
+using Game.Core;
 
-public class BomberEnemy : Enemy
+namespace Game.Gameplay
 {
-    [Header("Phase Settings")]
-    [SerializeField] private float phaseTimeReduction = 0.5f;
-
-    [Header("Explosion Settings")]
-    [SerializeField] private float baseTimeToExplode = 5f;
-    [SerializeField] private float minTimeToExplode = 2f;
-    [SerializeField] private int bulletCount = 2;
-
-    [Header("References")]
-    [SerializeField] private SpawnBulletEventChannelSO spawnBulletEventChannel;
-    [SerializeField] private IntEventChannelSO phaseChangedEventChannel;
-
-    private BomberEffect visuals;
-    private Coroutine explodeCoroutine;
-
-    private int currentPhase = 1; 
-
-    protected override void Move() { }
-
-    private void Awake()
+    public class BomberEnemy : Enemy
     {
-        visuals = GetComponent<BomberEffect>();
-    }
+        [Header("Phase Settings")]
+        [SerializeField] private float phaseTimeReduction = 0.5f;
 
-    private void OnEnable()
-    {
-        if (explodeCoroutine != null) StopCoroutine(explodeCoroutine);
-        if (phaseChangedEventChannel != null) phaseChangedEventChannel.Subscribe(UpdatePhase);
+        [Header("Explosion Settings")]
+        [SerializeField] private float baseTimeToExplode = 5f;
+        [SerializeField] private float minTimeToExplode = 2f;
+        [SerializeField] private int bulletCount = 2;
 
-        currentPhase = PhaseManager.CurrentPhaseNumber > 0 ? PhaseManager.CurrentPhaseNumber : 1;
-        explodeCoroutine = StartCoroutine(ExplodeSequence());
-    }
+        [Header("References")]
+        [SerializeField] private SpawnBulletEventChannelSO spawnBulletEventChannel;
+        [SerializeField] private IntEventChannelSO phaseChangedEventChannel;
 
-    private void OnDisable()
-    {
-        if (explodeCoroutine != null) StopCoroutine(explodeCoroutine);
-        if (phaseChangedEventChannel != null) phaseChangedEventChannel.Unsubscribe(UpdatePhase);
-    }
+        private BomberEffect visuals;
+        private Coroutine explodeCoroutine;
 
-    private void UpdatePhase(int newPhase)
-    {
-        currentPhase = newPhase;
-    }
+        private int currentPhase = 1;
 
-    private IEnumerator ExplodeSequence()
-    {
-        float dynamicTimeToExplode = Mathf.Max(minTimeToExplode, baseTimeToExplode - ((currentPhase - 1) * phaseTimeReduction));
-        float timer = 0f;
+        protected override void Move() { }
 
-        while (timer < dynamicTimeToExplode)
+        private void Awake()
         {
-            timer += Time.deltaTime;
-            if (visuals != null) visuals.SetFlashProgress(timer / dynamicTimeToExplode);
-            yield return null;
+            visuals = GetComponent<BomberEffect>();
         }
 
-        SpawnBulletsInX();
-        Die();
-    }
-
-    private void SpawnBulletsInX()
-    {
-        if (spawnBulletEventChannel == null) return;
-
-        float step = 360f / bulletCount;
-        float randomOffset = Random.Range(0f, step);
-
-        for (int i = 0; i < bulletCount; i++)
+        private void OnEnable()
         {
-            float angle = randomOffset + (i * step);
-            Quaternion bulletRotation = Quaternion.Euler(0f, angle, 0f);
-            spawnBulletEventChannel.RaiseEvent(BulletType.Bouncy, transform.position, bulletRotation);
-        }
-    }
+            if (explodeCoroutine != null) StopCoroutine(explodeCoroutine);
+            if (phaseChangedEventChannel != null) phaseChangedEventChannel.Subscribe(UpdatePhase);
 
-    protected override void CheckBounds() { }
+            currentPhase = PhaseManager.CurrentPhaseNumber > 0 ? PhaseManager.CurrentPhaseNumber : 1;
+            explodeCoroutine = StartCoroutine(ExplodeSequence());
+        }
+
+        private void OnDisable()
+        {
+            if (explodeCoroutine != null) StopCoroutine(explodeCoroutine);
+            if (phaseChangedEventChannel != null) phaseChangedEventChannel.Unsubscribe(UpdatePhase);
+        }
+
+        private void UpdatePhase(int newPhase)
+        {
+            currentPhase = newPhase;
+        }
+
+        private IEnumerator ExplodeSequence()
+        {
+            float dynamicTimeToExplode = Mathf.Max(minTimeToExplode, baseTimeToExplode - ((currentPhase - 1) * phaseTimeReduction));
+            float timer = 0f;
+
+            while (timer < dynamicTimeToExplode)
+            {
+                timer += Time.deltaTime;
+                if (visuals != null) visuals.SetFlashProgress(timer / dynamicTimeToExplode);
+                yield return null;
+            }
+
+            SpawnBulletsInX();
+            Die();
+        }
+
+        private void SpawnBulletsInX()
+        {
+            if (spawnBulletEventChannel == null) return;
+
+            float step = 360f / bulletCount;
+            float randomOffset = Random.Range(0f, step);
+
+            for (int i = 0; i < bulletCount; i++)
+            {
+                float angle = randomOffset + (i * step);
+                Quaternion bulletRotation = Quaternion.Euler(0f, angle, 0f);
+                spawnBulletEventChannel.RaiseEvent(BulletType.Bouncy, transform.position, bulletRotation);
+            }
+        }
+
+        protected override void CheckBounds() { }
+    }
 }

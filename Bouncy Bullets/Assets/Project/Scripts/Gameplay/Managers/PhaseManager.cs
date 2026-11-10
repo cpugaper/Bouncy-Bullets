@@ -1,87 +1,90 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using Game.Core;
 
-public class PhaseManager : MonoBehaviour
+namespace Game.Gameplay
 {
-    [Header("Phases")]
-    [SerializeField] private PhaseConfig[] phases;
-    [SerializeField, Min(0f)] private float transitionDelay = 2.5f;
-
-    [Header("Event Channels")]
-    [SerializeField] private IntEventChannelSO phaseChangedEventChannel;
-    [SerializeField] private PositionEventChannelSO playerDeathEventChannel;
-    [SerializeField] private GameEventChannelSO runStartedEventChannel;
-
-    public bool IsSpawning { get; private set; }
-    public PhaseConfig CurrentPhase { get; private set; }
-    public float CurrentInterval { get; private set; }
-    public static int CurrentPhaseNumber { get; private set; } = 1;
-
-
-    private Coroutine phasesCoroutine;
-
-    private void OnEnable()
+    public class PhaseManager : MonoBehaviour
     {
-        if (playerDeathEventChannel != null) playerDeathEventChannel.Subscribe(OnPlayerDeath);
-        if (runStartedEventChannel != null) runStartedEventChannel.Subscribe(HandleRunStarted);
-    }
+        [Header("Phases")]
+        [SerializeField] private PhaseConfig[] phases;
+        [SerializeField, Min(0f)] private float transitionDelay = 2.5f;
 
-    private void OnDisable()
-    {
-        if (playerDeathEventChannel != null) playerDeathEventChannel.Unsubscribe(OnPlayerDeath);
-        if (runStartedEventChannel != null) runStartedEventChannel.Unsubscribe(HandleRunStarted);
-    }
+        [Header("Event Channels")]
+        [SerializeField] private IntEventChannelSO phaseChangedEventChannel;
+        [SerializeField] private PositionEventChannelSO playerDeathEventChannel;
+        [SerializeField] private GameEventChannelSO runStartedEventChannel;
 
-    private void HandleRunStarted()
-    {
-        if (phases.Length == 0) return;
-        if (phasesCoroutine != null) StopCoroutine(phasesCoroutine);
+        public bool IsSpawning { get; private set; }
+        public PhaseConfig CurrentPhase { get; private set; }
+        public float CurrentInterval { get; private set; }
+        public static int CurrentPhaseNumber { get; private set; } = 1;
 
-        int savedIndex = SaveManager.Instance.SavedPhaseIndex;
-        int startIndex = Mathf.Clamp(savedIndex, 0, phases.Length - 1);  
 
-        phasesCoroutine = StartCoroutine(RunPhases(startIndex));
-    }
+        private Coroutine phasesCoroutine;
 
-    private void OnPlayerDeath(Vector3 position)
-    {
-        IsSpawning = false;
-        if (phasesCoroutine != null)
+        private void OnEnable()
         {
-            StopCoroutine(phasesCoroutine);
-            phasesCoroutine = null;
+            if (playerDeathEventChannel != null) playerDeathEventChannel.Subscribe(OnPlayerDeath);
+            if (runStartedEventChannel != null) runStartedEventChannel.Subscribe(HandleRunStarted);
         }
-    }
 
-    private IEnumerator RunPhases(int startIndex)
-    {
-        for (int i = startIndex; i < phases.Length; i++)
+        private void OnDisable()
         {
-            yield return null; 
-            
-            // The display phase number (1-based), NOT the array index
-            CurrentPhaseNumber = i + 1;
+            if (playerDeathEventChannel != null) playerDeathEventChannel.Unsubscribe(OnPlayerDeath);
+            if (runStartedEventChannel != null) runStartedEventChannel.Unsubscribe(HandleRunStarted);
+        }
 
-            PhaseConfig phase = phases[i];
-            CurrentPhase = phase;
-            CurrentInterval = phase.GetInterval(0f);
+        private void HandleRunStarted()
+        {
+            if (phases.Length == 0) return;
+            if (phasesCoroutine != null) StopCoroutine(phasesCoroutine);
+
+            int savedIndex = SaveManager.Instance.SavedPhaseIndex;
+            int startIndex = Mathf.Clamp(savedIndex, 0, phases.Length - 1);
+
+            phasesCoroutine = StartCoroutine(RunPhases(startIndex));
+        }
+
+        private void OnPlayerDeath(Vector3 position)
+        {
             IsSpawning = false;
-
-         
-            if (phaseChangedEventChannel != null)
-                phaseChangedEventChannel.RaiseEvent(CurrentPhaseNumber);
-
-            yield return new WaitForSeconds(transitionDelay);
-
-            IsSpawning = true;
-            float elapsed = 0f;
-
-            while (phase.IsEndless || elapsed < phase.Duration)
+            if (phasesCoroutine != null)
             {
-                elapsed += Time.deltaTime;
-                CurrentInterval = phase.GetInterval(elapsed);
-                yield return null; 
+                StopCoroutine(phasesCoroutine);
+                phasesCoroutine = null;
+            }
+        }
+
+        private IEnumerator RunPhases(int startIndex)
+        {
+            for (int i = startIndex; i < phases.Length; i++)
+            {
+                yield return null;
+
+                // The display phase number (1-based), NOT the array index
+                CurrentPhaseNumber = i + 1;
+
+                PhaseConfig phase = phases[i];
+                CurrentPhase = phase;
+                CurrentInterval = phase.GetInterval(0f);
+                IsSpawning = false;
+
+
+                if (phaseChangedEventChannel != null)
+                    phaseChangedEventChannel.RaiseEvent(CurrentPhaseNumber);
+
+                yield return new WaitForSeconds(transitionDelay);
+
+                IsSpawning = true;
+                float elapsed = 0f;
+
+                while (phase.IsEndless || elapsed < phase.Duration)
+                {
+                    elapsed += Time.deltaTime;
+                    CurrentInterval = phase.GetInterval(elapsed);
+                    yield return null;
+                }
             }
         }
     }

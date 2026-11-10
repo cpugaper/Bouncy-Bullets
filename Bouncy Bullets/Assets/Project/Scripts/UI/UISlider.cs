@@ -1,60 +1,64 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Game.Gameplay;
 
-public class UISlider : MonoBehaviour, ISelectHandler, IDeselectHandler, IPointerEnterHandler
+namespace Game.UI
 {
-    [Header("Settings")]
-    [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color selectedColor = Color.cyan; 
-
-    private Slider slider;
-    private Image fillImage;
-
-    private void Awake()
+    public class UISlider : MonoBehaviour, ISelectHandler, IDeselectHandler, IPointerEnterHandler
     {
-        slider = GetComponent<Slider>();
+        [Header("Settings")]
+        [SerializeField] private Color normalColor = Color.white;
+        [SerializeField] private Color selectedColor = Color.cyan;
 
-        Transform fillArea = transform.Find("Fill Area");
-        if (fillArea != null)
+        private Slider slider;
+        private Image fillImage;
+
+        private void Awake()
         {
-            Transform fill = fillArea.Find("Fill");
-            if (fill != null)
+            slider = GetComponent<Slider>();
+
+            Transform fillArea = transform.Find("Fill Area");
+            if (fillArea != null)
             {
-                fillImage = fill.GetComponent<Image>();
+                Transform fill = fillArea.Find("Fill");
+                if (fill != null)
+                {
+                    fillImage = fill.GetComponent<Image>();
+                }
+            }
+
+            UpdateFillColor(false);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (EventSystem.current != null && slider.interactable)
+            {
+                EventSystem.current.SetSelectedGameObject(gameObject);
             }
         }
 
-        UpdateFillColor(false);
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (EventSystem.current != null && slider.interactable)
+        public void OnSelect(BaseEventData eventData)
         {
-            EventSystem.current.SetSelectedGameObject(gameObject);
+            UpdateFillColor(true);
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayUIHover();
+            }
         }
-    }
 
-    public void OnSelect(BaseEventData eventData)
-    {
-        UpdateFillColor(true);
-        if (AudioManager.Instance != null)
+        public void OnDeselect(BaseEventData eventData)
         {
-            AudioManager.Instance.PlayUIHover();
+            UpdateFillColor(false);
         }
-    }
 
-    public void OnDeselect(BaseEventData eventData)
-    {
-        UpdateFillColor(false);
-    }
-
-    private void UpdateFillColor(bool isSelected)
-    {
-        if (fillImage != null)
+        private void UpdateFillColor(bool isSelected)
         {
-            fillImage.color = isSelected ? selectedColor : normalColor;
+            if (fillImage != null)
+            {
+                fillImage.color = isSelected ? selectedColor : normalColor;
+            }
         }
     }
 }

@@ -1,71 +1,75 @@
 using System.Collections;
 using UnityEngine;
+using Game.Core;
 
-public class PlayerShield : MonoBehaviour
+namespace Game.Gameplay
 {
-    public bool IsShieldActive { get; private set; } = false;
-
-    [Header("Shield Settings")]
-    [SerializeField] private float shieldDuration = 10f;
-    [SerializeField] private float shieldCooldown = 15f;
-    [SerializeField] private float warningDuration = 2f;
-
-    [Header("Event Channels")]
-    [SerializeField] private GameEventChannelSO shieldActivatedEventChannel;
-    [SerializeField] private GameEventChannelSO shieldDeactivatedEventChannel;
-    [SerializeField] private BoolEventChannelSO shieldReadyEventChannel;
-    [SerializeField] private FloatEventChannelSO shieldCooldownStartedEventChannel;
-
-    private ShieldEffect shieldVisual;
-    private InputReader input;
-    private float nextShieldTime = 0f;
-
-    private void Awake()
+    public class PlayerShield : MonoBehaviour
     {
-        shieldVisual = GetComponent<ShieldEffect>();
-    }
+        public bool IsShieldActive { get; private set; } = false;
 
-    private void Start()
-    {
-        input = InputReader.Instance;
-    }
+        [Header("Shield Settings")]
+        [SerializeField] private float shieldDuration = 10f;
+        [SerializeField] private float shieldCooldown = 15f;
+        [SerializeField] private float warningDuration = 2f;
 
-    void Update()
-    {
-        if (input.ShieldPressed && !IsShieldActive && Time.time >= nextShieldTime)
+        [Header("Event Channels")]
+        [SerializeField] private GameEventChannelSO shieldActivatedEventChannel;
+        [SerializeField] private GameEventChannelSO shieldDeactivatedEventChannel;
+        [SerializeField] private BoolEventChannelSO shieldReadyEventChannel;
+        [SerializeField] private FloatEventChannelSO shieldCooldownStartedEventChannel;
+
+        private ShieldEffect shieldVisual;
+        private InputReader input;
+        private float nextShieldTime = 0f;
+
+        private void Awake()
         {
-            StartCoroutine(ActivateShield());
+            shieldVisual = GetComponent<ShieldEffect>();
         }
-    }
 
-    IEnumerator ActivateShield()
-    {
-        IsShieldActive = true;
+        private void Start()
+        {
+            input = InputReader.Instance;
+        }
 
-        if(shieldReadyEventChannel != null) shieldReadyEventChannel.RaiseEvent(false);
-        if (shieldVisual != null) shieldVisual.ActivateVisualShield();
-        if (shieldActivatedEventChannel != null) shieldActivatedEventChannel.RaiseEvent();
-        
-        float mainDuration = Mathf.Max(0f, shieldDuration - warningDuration);
-        yield return new WaitForSeconds(mainDuration);
+        void Update()
+        {
+            if (input.ShieldPressed && !IsShieldActive && Time.time >= nextShieldTime)
+            {
+                StartCoroutine(ActivateShield());
+            }
+        }
 
-        if (shieldVisual != null) shieldVisual.StartWarningVisual(warningDuration);
-        yield return new WaitForSeconds(warningDuration);
+        IEnumerator ActivateShield()
+        {
+            IsShieldActive = true;
 
-        if (shieldVisual != null) shieldVisual.DeactivateVisualShield();
-        IsShieldActive = false;
-        nextShieldTime = Time.time + shieldCooldown;
+            if (shieldReadyEventChannel != null) shieldReadyEventChannel.RaiseEvent(false);
+            if (shieldVisual != null) shieldVisual.ActivateVisualShield();
+            if (shieldActivatedEventChannel != null) shieldActivatedEventChannel.RaiseEvent();
 
-        if (shieldDeactivatedEventChannel != null) shieldDeactivatedEventChannel.RaiseEvent();
-        if (shieldCooldownStartedEventChannel != null) shieldCooldownStartedEventChannel.RaiseEvent(shieldCooldown);
+            float mainDuration = Mathf.Max(0f, shieldDuration - warningDuration);
+            yield return new WaitForSeconds(mainDuration);
 
-        yield return new WaitForSeconds(shieldCooldown);
+            if (shieldVisual != null) shieldVisual.StartWarningVisual(warningDuration);
+            yield return new WaitForSeconds(warningDuration);
 
-        if (shieldReadyEventChannel != null) shieldReadyEventChannel.RaiseEvent(true);
-    }
+            if (shieldVisual != null) shieldVisual.DeactivateVisualShield();
+            IsShieldActive = false;
+            nextShieldTime = Time.time + shieldCooldown;
 
-    public static bool HasActiveShield(Collider player)
-    {
-        return player.TryGetComponent(out PlayerShield shield) && shield.IsShieldActive;
+            if (shieldDeactivatedEventChannel != null) shieldDeactivatedEventChannel.RaiseEvent();
+            if (shieldCooldownStartedEventChannel != null) shieldCooldownStartedEventChannel.RaiseEvent(shieldCooldown);
+
+            yield return new WaitForSeconds(shieldCooldown);
+
+            if (shieldReadyEventChannel != null) shieldReadyEventChannel.RaiseEvent(true);
+        }
+
+        public static bool HasActiveShield(Collider player)
+        {
+            return player.TryGetComponent(out PlayerShield shield) && shield.IsShieldActive;
+        }
     }
 }

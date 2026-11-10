@@ -1,6 +1,9 @@
-public enum InputDeviceKind
+namespace Game.Core
 {
-    Mouse,
-    Keyboard,
-    Gamepad
+    public enum InputDeviceKind
+    {
+        Mouse,
+        Keyboard,
+        Gamepad
+    }
 }

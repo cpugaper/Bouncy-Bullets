@@ -1,5 +1,8 @@
-public enum BulletType
+namespace Game.Core
 {
-    Bouncy,
-    Homing
+    public enum BulletType
+    {
+        Bouncy,
+        Homing
+    }
 }

@@ -1,67 +1,70 @@
 using UnityEngine;
 
-public class BulletEffect : MonoBehaviour
+namespace Game.Gameplay
 {
-    [Header("Visual References")]
-    [SerializeField] private Renderer bulletRenderer;
-    [SerializeField] private TrailRenderer trailRenderer;
-
-    [Header("Blink Settings")]
-    [ColorUsage(true, true)]
-    [SerializeField] private Color warningColor = Color.white;
-    [SerializeField] private float blinkSpeed = 15f;
-
-    private MaterialPropertyBlock propertyBlock;
-    private Color baseColor;
-
-    private static readonly int ColorPropertyID = Shader.PropertyToID("_BaseColor");
-
-    private void Awake()
+    public class BulletEffect : MonoBehaviour
     {
-        propertyBlock = new MaterialPropertyBlock();
+        [Header("Visual References")]
+        [SerializeField] private Renderer bulletRenderer;
+        [SerializeField] private TrailRenderer trailRenderer;
 
-        if (bulletRenderer == null)
-            bulletRenderer = GetComponentInChildren<Renderer>();
+        [Header("Blink Settings")]
+        [ColorUsage(true, true)]
+        [SerializeField] private Color warningColor = Color.white;
+        [SerializeField] private float blinkSpeed = 15f;
 
-        if (trailRenderer == null)
-            trailRenderer = GetComponentInChildren<TrailRenderer>();
+        private MaterialPropertyBlock propertyBlock;
+        private Color baseColor;
 
-        if (bulletRenderer != null && bulletRenderer.sharedMaterial != null)
+        private static readonly int ColorPropertyID = Shader.PropertyToID("_BaseColor");
+
+        private void Awake()
         {
-            if (bulletRenderer.sharedMaterial.HasProperty(ColorPropertyID))
+            propertyBlock = new MaterialPropertyBlock();
+
+            if (bulletRenderer == null)
+                bulletRenderer = GetComponentInChildren<Renderer>();
+
+            if (trailRenderer == null)
+                trailRenderer = GetComponentInChildren<TrailRenderer>();
+
+            if (bulletRenderer != null && bulletRenderer.sharedMaterial != null)
             {
-                baseColor = bulletRenderer.sharedMaterial.GetColor(ColorPropertyID);
-            }
-            else
-            {
-                baseColor = bulletRenderer.sharedMaterial.color;
+                if (bulletRenderer.sharedMaterial.HasProperty(ColorPropertyID))
+                {
+                    baseColor = bulletRenderer.sharedMaterial.GetColor(ColorPropertyID);
+                }
+                else
+                {
+                    baseColor = bulletRenderer.sharedMaterial.color;
+                }
             }
         }
-    }
 
-    public void ResetVisuals()
-    {
-        if (trailRenderer != null)
+        public void ResetVisuals()
         {
-            trailRenderer.Clear();
+            if (trailRenderer != null)
+            {
+                trailRenderer.Clear();
+            }
+
+            SetColor(baseColor);
         }
 
-        SetColor(baseColor);
-    }
+        public void AnimateBlink(float elapsedTime)
+        {
+            float lerpFactor = Mathf.PingPong(elapsedTime * blinkSpeed, 1f);
+            Color currentColor = Color.Lerp(baseColor, warningColor, lerpFactor);
+            SetColor(currentColor);
+        }
 
-    public void AnimateBlink(float elapsedTime)
-    {
-        float lerpFactor = Mathf.PingPong(elapsedTime * blinkSpeed, 1f);
-        Color currentColor = Color.Lerp(baseColor, warningColor, lerpFactor);
-        SetColor(currentColor);
-    }
+        private void SetColor(Color color)
+        {
+            if (bulletRenderer == null) return;
 
-    private void SetColor(Color color)
-    {
-        if (bulletRenderer == null) return;
-
-        bulletRenderer.GetPropertyBlock(propertyBlock);
-        propertyBlock.SetColor(ColorPropertyID, color);
-        bulletRenderer.SetPropertyBlock(propertyBlock);
+            bulletRenderer.GetPropertyBlock(propertyBlock);
+            propertyBlock.SetColor(ColorPropertyID, color);
+            bulletRenderer.SetPropertyBlock(propertyBlock);
+        }
     }
 }

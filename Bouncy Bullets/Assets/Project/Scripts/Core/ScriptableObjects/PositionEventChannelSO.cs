@@ -1,5 +1,7 @@
-using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PositionEventChannelSO", menuName = "Events/Position Event Channel")]
-public class PositionEventChannelSO : EventChannelSO<Vector3> { }
+namespace Game.Core
+{
+    [CreateAssetMenu(fileName = "PositionEventChannelSO", menuName = "Events/Position Event Channel")]
+    public class PositionEventChannelSO : EventChannelSO<Vector3> { }
+}

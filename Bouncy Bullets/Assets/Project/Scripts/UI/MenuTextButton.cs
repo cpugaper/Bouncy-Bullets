@@ -2,61 +2,65 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Game.Gameplay;
 
-[RequireComponent(typeof(Button))]
-public class MenuTextButton : MonoBehaviour, IPointerEnterHandler, IPointerMoveHandler, ISelectHandler, IDeselectHandler
+namespace Game.UI
 {
-    [SerializeField] private TextMeshProUGUI text;
-    [SerializeField] private GameObject arrow;       
-    [SerializeField] private Material glowMaterial;  
-
-    private Button button;
-    private Material normalMaterial;
-
-    private void Awake()
+    [RequireComponent(typeof(Button))]
+    public class MenuTextButton : MonoBehaviour, IPointerEnterHandler, IPointerMoveHandler, ISelectHandler, IDeselectHandler
     {
-        button = GetComponent<Button>();
-        if (text != null) normalMaterial = text.fontSharedMaterial;
-        button.onClick.AddListener(OnButtonClicked);
-    }
+        [SerializeField] private TextMeshProUGUI text;
+        [SerializeField] private GameObject arrow;
+        [SerializeField] private Material glowMaterial;
 
-    private void OnDestroy()
-    {
-        if (button != null) button.onClick.RemoveListener(OnButtonClicked);
-    }
+        private Button button;
+        private Material normalMaterial;
 
-    private void OnEnable() =>
-            SetHighlighted(EventSystem.current != null && EventSystem.current.currentSelectedGameObject == gameObject);
+        private void Awake()
+        {
+            button = GetComponent<Button>();
+            if (text != null) normalMaterial = text.fontSharedMaterial;
+            button.onClick.AddListener(OnButtonClicked);
+        }
 
-    public void OnSelect(BaseEventData e)
-    {
-        SetHighlighted(true);
-        if (AudioManager.Instance != null) AudioManager.Instance.PlayUIHover();
-    }
+        private void OnDestroy()
+        {
+            if (button != null) button.onClick.RemoveListener(OnButtonClicked);
+        }
 
-    public void OnDeselect(BaseEventData e) => SetHighlighted(false);
+        private void OnEnable() =>
+                SetHighlighted(EventSystem.current != null && EventSystem.current.currentSelectedGameObject == gameObject);
 
-    public void OnPointerEnter(PointerEventData e) => TakeSelection();
-    public void OnPointerMove(PointerEventData e) => TakeSelection();
+        public void OnSelect(BaseEventData e)
+        {
+            SetHighlighted(true);
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayUIHover();
+        }
 
-    private void OnButtonClicked()
-    {
-        if (AudioManager.Instance != null) AudioManager.Instance.PlayUIClick();
-    }
+        public void OnDeselect(BaseEventData e) => SetHighlighted(false);
 
-    private void TakeSelection()
-    {
-        EventSystem es = EventSystem.current;
-        if (es == null || !button.interactable || es.currentSelectedGameObject == gameObject) return;
-        es.SetSelectedGameObject(gameObject);
-    }
+        public void OnPointerEnter(PointerEventData e) => TakeSelection();
+        public void OnPointerMove(PointerEventData e) => TakeSelection();
 
-    private void SetHighlighted(bool on)
-    {
-        on &= button.interactable;
+        private void OnButtonClicked()
+        {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayUIClick();
+        }
 
-        if (arrow != null) arrow.SetActive(on);
-        if (text != null && glowMaterial != null && normalMaterial != null)
-            text.fontSharedMaterial = on ? glowMaterial : normalMaterial;
+        private void TakeSelection()
+        {
+            EventSystem es = EventSystem.current;
+            if (es == null || !button.interactable || es.currentSelectedGameObject == gameObject) return;
+            es.SetSelectedGameObject(gameObject);
+        }
+
+        private void SetHighlighted(bool on)
+        {
+            on &= button.interactable;
+
+            if (arrow != null) arrow.SetActive(on);
+            if (text != null && glowMaterial != null && normalMaterial != null)
+                text.fontSharedMaterial = on ? glowMaterial : normalMaterial;
+        }
     }
 }

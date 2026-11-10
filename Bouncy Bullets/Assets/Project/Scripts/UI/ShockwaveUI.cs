@@ -1,35 +1,39 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Game.Core;
 
-public class ShockwaveUI : MonoBehaviour
+namespace Game.UI
 {
-    [Header("UI References")]
-    [SerializeField] private Image[] chargeImages;
-
-    [Header("Sprites")]
-    [SerializeField] private Sprite activeSprite;    
-    [SerializeField] private Sprite inactiveSprite;
-
-    [Header("Event Channels")]
-    [SerializeField] private IntEventChannelSO shockwaveChangedEventChannel;
-
-    private void OnEnable()
+    public class ShockwaveUI : MonoBehaviour
     {
-        if (shockwaveChangedEventChannel != null) shockwaveChangedEventChannel.Subscribe(UpdateUI);
-    }
+        [Header("UI References")]
+        [SerializeField] private Image[] chargeImages;
 
-    private void OnDisable()
-    {
-        if (shockwaveChangedEventChannel != null) shockwaveChangedEventChannel.Unsubscribe(UpdateUI);
-    }
+        [Header("Sprites")]
+        [SerializeField] private Sprite activeSprite;
+        [SerializeField] private Sprite inactiveSprite;
 
-    private void UpdateUI(int currentCharges)
-    {
-        for (int i = 0; i < chargeImages.Length; i++)
+        [Header("Event Channels")]
+        [SerializeField] private IntEventChannelSO shockwaveChangedEventChannel;
+
+        private void OnEnable()
         {
-            if (chargeImages[i] != null)
+            if (shockwaveChangedEventChannel != null) shockwaveChangedEventChannel.Subscribe(UpdateUI);
+        }
+
+        private void OnDisable()
+        {
+            if (shockwaveChangedEventChannel != null) shockwaveChangedEventChannel.Unsubscribe(UpdateUI);
+        }
+
+        private void UpdateUI(int currentCharges)
+        {
+            for (int i = 0; i < chargeImages.Length; i++)
             {
-                chargeImages[i].sprite = i < currentCharges ? activeSprite : inactiveSprite;
+                if (chargeImages[i] != null)
+                {
+                    chargeImages[i].sprite = i < currentCharges ? activeSprite : inactiveSprite;
+                }
             }
         }
     }

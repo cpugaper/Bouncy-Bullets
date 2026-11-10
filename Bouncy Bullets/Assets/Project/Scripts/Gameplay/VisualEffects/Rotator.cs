@@ -1,11 +1,14 @@
 using UnityEngine;
 
-public class Rotator : MonoBehaviour
+namespace Game.Gameplay
 {
-    private Vector3 rotationSpeed = new Vector3(0f, 50f, 0f);
-
-    void Update()
+    public class Rotator : MonoBehaviour
     {
-        transform.Rotate(rotationSpeed * Time.deltaTime, Space.Self);
+        [SerializeField] private Vector3 rotationSpeed = new Vector3(0f, 50f, 0f);
+
+        void Update()
+        {
+            transform.Rotate(rotationSpeed * Time.deltaTime, Space.Self);
+        }
     }
 }

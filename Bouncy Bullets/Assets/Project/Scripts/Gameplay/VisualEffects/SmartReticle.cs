@@ -1,93 +1,97 @@
 using UnityEngine;
+using Game.Core;
 
-public class SmartReticle : MonoBehaviour
+namespace Game.Gameplay
 {
-    [Header("References")]
-    [SerializeField] private MeshRenderer reticleRenderer;
-
-    [Header("Materials")]
-    [SerializeField] private Material normalMaterial;
-    [SerializeField] private Material lockedMaterial;
-
-    [Header("Aim Settings")]
-    [SerializeField] private float sphereCastRadius = 1.0f;
-    [SerializeField] private LayerMask enemyLayer;
-
-    [Header("Visual Settings")]
-    [SerializeField] private float smoothSpeed = 25f;
-    [SerializeField] private float normalHeightOffset = 0.05f;
-    [SerializeField] private float lockedHeightOffset = 3f;
-
-    private Camera mainCamera;
-    private InputReader input; 
-    private Transform playerTransform;
-    private bool isPlaying = true;
-
-    private void Start()
+    public class SmartReticle : MonoBehaviour
     {
-        mainCamera = Camera.main;
-        input = InputReader.Instance;
-       
-        transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-        SetMaterial(normalMaterial);
+        [Header("References")]
+        [SerializeField] private MeshRenderer reticleRenderer;
 
-        GameManager.Instance.OnGameStateChanged += HandleGameStateChanged;
-        HandleGameStateChanged(GameManager.Instance.CurrentState);
-    }
+        [Header("Materials")]
+        [SerializeField] private Material normalMaterial;
+        [SerializeField] private Material lockedMaterial;
 
-    private void OnDestroy()
-    {
-        if (GameManager.Instance != null)
-            GameManager.Instance.OnGameStateChanged -= HandleGameStateChanged;
-    }
+        [Header("Aim Settings")]
+        [SerializeField] private float sphereCastRadius = 1.0f;
+        [SerializeField] private LayerMask enemyLayer;
 
-    private void HandleGameStateChanged(GameState state)
-    {
-        isPlaying = state == GameState.Playing;
-        if (reticleRenderer != null) reticleRenderer.enabled = isPlaying;
-    }
+        [Header("Visual Settings")]
+        [SerializeField] private float smoothSpeed = 25f;
+        [SerializeField] private float normalHeightOffset = 0.05f;
+        [SerializeField] private float lockedHeightOffset = 3f;
 
-    private void LateUpdate()
-    {
-        if (!isPlaying || mainCamera == null) return;
+        private Camera mainCamera;
+        private InputReader input;
+        private Transform playerTransform;
+        private bool isPlaying = true;
 
-        if (playerTransform == null)
+        private void Start()
         {
-            if (PlayerMovement.Instance == null) return;
-            playerTransform = PlayerMovement.Instance.transform;
+            mainCamera = Camera.main;
+            input = InputReader.Instance;
+
+            transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+            SetMaterial(normalMaterial);
+
+            GameManager.Instance.OnGameStateChanged += HandleGameStateChanged;
+            HandleGameStateChanged(GameManager.Instance.CurrentState);
         }
 
-        Vector3 playerPos = playerTransform.position;
+        private void OnDestroy()
+        {
+            if (GameManager.Instance != null)
+                GameManager.Instance.OnGameStateChanged -= HandleGameStateChanged;
+        }
 
-        if (!PointerUtils.TryGetAimInfo(mainCamera, input.AimScreenPosition, playerPos, out Vector3 direction, out float distance))
-            return;
+        private void HandleGameStateChanged(GameState state)
+        {
+            isPlaying = state == GameState.Playing;
+            if (reticleRenderer != null) reticleRenderer.enabled = isPlaying;
+        }
 
-        bool isEnemyTargeted = EvaluateTarget(playerPos, direction, distance);
-        UpdateReticlePosition(playerPos, direction, distance, isEnemyTargeted);
-    }
+        private void LateUpdate()
+        {
+            if (!isPlaying || mainCamera == null) return;
 
-    private bool EvaluateTarget(Vector3 playerPos, Vector3 direction, float distance)
-    {
-        bool isEnemyTargeted = Physics.SphereCast(playerPos, sphereCastRadius, direction, out _, distance, enemyLayer);
+            if (playerTransform == null)
+            {
+                if (PlayerMovement.Instance == null) return;
+                playerTransform = PlayerMovement.Instance.transform;
+            }
 
-        SetMaterial(isEnemyTargeted ? lockedMaterial : normalMaterial);
+            Vector3 playerPos = playerTransform.position;
 
-        return isEnemyTargeted;
-    }
+            if (!PointerUtils.TryGetAimInfo(mainCamera, input.AimScreenPosition, playerPos, out Vector3 direction, out float distance))
+                return;
 
-    private void UpdateReticlePosition(Vector3 playerPos, Vector3 direction, float distance, bool isEnemyTargeted)
-    {
-        Vector3 targetReticlePos = playerPos + direction * distance;
+            bool isEnemyTargeted = EvaluateTarget(playerPos, direction, distance);
+            UpdateReticlePosition(playerPos, direction, distance, isEnemyTargeted);
+        }
 
-        float heightOffset = isEnemyTargeted ? lockedHeightOffset : normalHeightOffset;
-        targetReticlePos.y = playerPos.y + heightOffset;
+        private bool EvaluateTarget(Vector3 playerPos, Vector3 direction, float distance)
+        {
+            bool isEnemyTargeted = Physics.SphereCast(playerPos, sphereCastRadius, direction, out _, distance, enemyLayer);
 
-        transform.position = Vector3.Lerp(transform.position, targetReticlePos, Time.deltaTime * smoothSpeed);
-    }
+            SetMaterial(isEnemyTargeted ? lockedMaterial : normalMaterial);
 
-    private void SetMaterial(Material material)
-    {
-        if (reticleRenderer == null || material == null) return;
-        if (reticleRenderer.sharedMaterial != material) reticleRenderer.sharedMaterial = material;
+            return isEnemyTargeted;
+        }
+
+        private void UpdateReticlePosition(Vector3 playerPos, Vector3 direction, float distance, bool isEnemyTargeted)
+        {
+            Vector3 targetReticlePos = playerPos + direction * distance;
+
+            float heightOffset = isEnemyTargeted ? lockedHeightOffset : normalHeightOffset;
+            targetReticlePos.y = playerPos.y + heightOffset;
+
+            transform.position = Vector3.Lerp(transform.position, targetReticlePos, Time.deltaTime * smoothSpeed);
+        }
+
+        private void SetMaterial(Material material)
+        {
+            if (reticleRenderer == null || material == null) return;
+            if (reticleRenderer.sharedMaterial != material) reticleRenderer.sharedMaterial = material;
+        }
     }
 }

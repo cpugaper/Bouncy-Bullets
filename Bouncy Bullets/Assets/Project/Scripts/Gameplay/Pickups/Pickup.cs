@@ -1,53 +1,56 @@
 using System;
 using UnityEngine;
 
-public abstract class Pickup : MonoBehaviour
+namespace Game.Gameplay
 {
-    [SerializeField] private float lifetime = 12f;
-
-    private Action onDespawn;
-    private float timer;
-
-    public void SetDespawnCallback(Action callback)
+    public abstract class Pickup : MonoBehaviour
     {
-        onDespawn = callback;
-    }
+        [SerializeField] private float lifetime = 12f;
 
-    private void OnEnable()
-    {
-        timer = lifetime;
-    }
+        private Action onDespawn;
+        private float timer;
 
-    private void Update()
-    {
-        timer -= Time.deltaTime;
-        if (timer <= 0f)
+        public void SetDespawnCallback(Action callback)
         {
-            ReturnToPool();
+            onDespawn = callback;
         }
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!gameObject.activeInHierarchy || !other.CompareTag("Player")) return;
-
-        if (TryApplyEffect(other.gameObject))
+        private void OnEnable()
         {
-            PlayPickupSound();
-            ReturnToPool();
+            timer = lifetime;
         }
-    }
 
-    protected abstract bool TryApplyEffect(GameObject player);
-
-    protected abstract void PlayPickupSound();
-
-    private void ReturnToPool()
-    {
-        onDespawn?.Invoke();
-        if (onDespawn == null)
+        private void Update()
         {
-            gameObject.SetActive(false);
+            timer -= Time.deltaTime;
+            if (timer <= 0f)
+            {
+                ReturnToPool();
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!gameObject.activeInHierarchy || !other.CompareTag("Player")) return;
+
+            if (TryApplyEffect(other.gameObject))
+            {
+                PlayPickupSound();
+                ReturnToPool();
+            }
+        }
+
+        protected abstract bool TryApplyEffect(GameObject player);
+
+        protected abstract void PlayPickupSound();
+
+        private void ReturnToPool()
+        {
+            onDespawn?.Invoke();
+            if (onDespawn == null)
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 }

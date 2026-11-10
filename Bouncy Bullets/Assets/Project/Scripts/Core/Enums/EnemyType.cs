@@ -1,8 +1,11 @@
-public enum EnemyType
+namespace Game.Core
 {
-    Normal,
-    Shooter,
-    Bomber,
-    Volatile
+    public enum EnemyType
+    {
+        Normal,
+        Shooter,
+        Bomber,
+        Volatile
+    }
 }
 

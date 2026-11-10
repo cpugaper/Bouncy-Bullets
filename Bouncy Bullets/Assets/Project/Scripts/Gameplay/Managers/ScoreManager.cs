@@ -1,46 +1,50 @@
 using UnityEngine;
+using Game.Core;
 
-public class ScoreManager : MonoBehaviour
+namespace Game.Gameplay
 {
-    [Header("Event Channels")]
-    [SerializeField] private IntEventChannelSO addScoreEventChannel;
-    [SerializeField] private IntEventChannelSO scoreUpdatedEventChannel;
-    [SerializeField] private IntEventChannelSO highScoreUpdatedEventChannel;
-    [SerializeField] private GameEventChannelSO runStartedEventChannel;
-
-    private int currentScore;
-    private int highScore;
-
-    private void OnEnable()
+    public class ScoreManager : MonoBehaviour
     {
-        if (addScoreEventChannel != null) addScoreEventChannel.Subscribe(AddScore);
-        if (runStartedEventChannel != null) runStartedEventChannel.Subscribe(HandleRunStarted);
-    }
+        [Header("Event Channels")]
+        [SerializeField] private IntEventChannelSO addScoreEventChannel;
+        [SerializeField] private IntEventChannelSO scoreUpdatedEventChannel;
+        [SerializeField] private IntEventChannelSO highScoreUpdatedEventChannel;
+        [SerializeField] private GameEventChannelSO runStartedEventChannel;
 
-    private void OnDisable()
-    {
-        if (addScoreEventChannel != null) addScoreEventChannel.Unsubscribe(AddScore);
-        if (runStartedEventChannel != null) runStartedEventChannel.Unsubscribe(HandleRunStarted);
-    }
+        private int currentScore;
+        private int highScore;
 
-    private void HandleRunStarted()
-    {
-        currentScore = SaveManager.Instance.SavedScore;
-        highScore = SaveManager.Instance.HighScore;
-
-        if (scoreUpdatedEventChannel != null) scoreUpdatedEventChannel.RaiseEvent(currentScore);
-        if (highScoreUpdatedEventChannel != null) highScoreUpdatedEventChannel.RaiseEvent(highScore);
-    }
-
-    private void AddScore(int amount)
-    {
-        currentScore = Mathf.Max(0, currentScore + amount);
-        if (scoreUpdatedEventChannel != null) scoreUpdatedEventChannel.RaiseEvent(currentScore);
-
-        if (currentScore > highScore)
+        private void OnEnable()
         {
-            highScore = currentScore;
+            if (addScoreEventChannel != null) addScoreEventChannel.Subscribe(AddScore);
+            if (runStartedEventChannel != null) runStartedEventChannel.Subscribe(HandleRunStarted);
+        }
+
+        private void OnDisable()
+        {
+            if (addScoreEventChannel != null) addScoreEventChannel.Unsubscribe(AddScore);
+            if (runStartedEventChannel != null) runStartedEventChannel.Unsubscribe(HandleRunStarted);
+        }
+
+        private void HandleRunStarted()
+        {
+            currentScore = SaveManager.Instance.SavedScore;
+            highScore = SaveManager.Instance.HighScore;
+
+            if (scoreUpdatedEventChannel != null) scoreUpdatedEventChannel.RaiseEvent(currentScore);
             if (highScoreUpdatedEventChannel != null) highScoreUpdatedEventChannel.RaiseEvent(highScore);
+        }
+
+        private void AddScore(int amount)
+        {
+            currentScore = Mathf.Max(0, currentScore + amount);
+            if (scoreUpdatedEventChannel != null) scoreUpdatedEventChannel.RaiseEvent(currentScore);
+
+            if (currentScore > highScore)
+            {
+                highScore = currentScore;
+                if (highScoreUpdatedEventChannel != null) highScoreUpdatedEventChannel.RaiseEvent(highScore);
+            }
         }
     }
 }

@@ -1,21 +1,24 @@
 using UnityEngine;
 
-public class ShockwavePickup : Pickup
+namespace Game.Gameplay
 {
-    protected override bool TryApplyEffect(GameObject player)
+    public class ShockwavePickup : Pickup
     {
-        if (player.TryGetComponent(out PlayerShockwave shockwave))
+        protected override bool TryApplyEffect(GameObject player)
         {
-            return shockwave.TryAddShockwave();
+            if (player.TryGetComponent(out PlayerShockwave shockwave))
+            {
+                return shockwave.TryAddShockwave();
+            }
+            return false;
         }
-        return false;
-    }
 
-    protected override void PlayPickupSound()
-    {
-        if (AudioManager.Instance != null)
+        protected override void PlayPickupSound()
         {
-            AudioManager.Instance.PlayShockwavePickup(); 
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayShockwavePickup();
+            }
         }
     }
 }

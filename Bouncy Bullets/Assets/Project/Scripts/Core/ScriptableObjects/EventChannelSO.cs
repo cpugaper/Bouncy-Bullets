@@ -1,12 +1,15 @@
 using System;
 using UnityEngine;
 
-public abstract class EventChannelSO<T> : ScriptableObject
+namespace Game.Core
 {
-    private Action<T> onEventRaised;
+    public abstract class EventChannelSO<T> : ScriptableObject
+    {
+        private Action<T> onEventRaised;
 
-    public void Subscribe(Action<T> listener) => onEventRaised += listener;
-    public void Unsubscribe(Action<T> listener) => onEventRaised -= listener;
+        public void Subscribe(Action<T> listener) => onEventRaised += listener;
+        public void Unsubscribe(Action<T> listener) => onEventRaised -= listener;
 
-    public void RaiseEvent(T position) => onEventRaised?.Invoke(position);
+        public void RaiseEvent(T position) => onEventRaised?.Invoke(position);
+    }
 }

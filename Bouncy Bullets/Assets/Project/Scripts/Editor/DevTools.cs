@@ -1,12 +1,16 @@
 using UnityEngine;
 using UnityEditor;
+using Game.Core;
 
-public static class DevTools
+namespace Game.Editor
 {
-    [MenuItem("Tools/Delete Save File")]
-    private static void DeleteSave()
+    public static class DevTools
     {
-        SaveSystem.Delete();
-        Debug.Log("Save file deleted");
+        [MenuItem("Tools/Delete Save File")]
+        private static void DeleteSave()
+        {
+            SaveSystem.Delete();
+            Debug.Log("Save file deleted");
+        }
     }
 }

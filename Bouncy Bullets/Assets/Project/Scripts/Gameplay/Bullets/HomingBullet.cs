@@ -1,47 +1,49 @@
 using UnityEngine;
 
-public class HomingBullet : Bullet
+namespace Game.Gameplay
 {
-    [Header("Homing Settings")]
-    [SerializeField] private float turnSpeed = 130f;
-
-    private void FixedUpdate()
+    public class HomingBullet : Bullet
     {
-        HomingMovement();
-        if (BounceInsideView()) rb.MoveRotation(Quaternion.LookRotation(rb.linearVelocity));
-    }
+        [Header("Homing Settings")]
+        [SerializeField] private float turnSpeed = 130f;
 
-    private void HomingMovement()
-    {
-        if (PlayerMovement.Instance != null)
+        private void FixedUpdate()
         {
-            Vector3 targetDir = (PlayerMovement.Instance.transform.position - transform.position).normalized;
-            targetDir.y = 0f;
+            HomingMovement();
+            if (BounceInsideView()) rb.MoveRotation(Quaternion.LookRotation(rb.linearVelocity));
+        }
 
-            if (targetDir != Vector3.zero)
+        private void HomingMovement()
+        {
+            if (PlayerMovement.Instance != null)
             {
-                Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, turnSpeed * Mathf.Deg2Rad * Time.fixedDeltaTime, 0f);
-                if (newDir != Vector3.zero) rb.MoveRotation(Quaternion.LookRotation(newDir));
+                Vector3 targetDir = (PlayerMovement.Instance.transform.position - transform.position).normalized;
+                targetDir.y = 0f;
+
+                if (targetDir != Vector3.zero)
+                {
+                    Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, turnSpeed * Mathf.Deg2Rad * Time.fixedDeltaTime, 0f);
+                    if (newDir != Vector3.zero) rb.MoveRotation(Quaternion.LookRotation(newDir));
+                }
             }
+
+            rb.linearVelocity = transform.forward * speed;
         }
 
-        rb.linearVelocity = transform.forward * speed;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
+        private void OnTriggerEnter(Collider other)
         {
-            ReturnToPool();
-        }
-        else if (other.CompareTag("Enemy"))
-        {
-            if (other.TryGetComponent(out Enemy enemy))
+            if (other.CompareTag("Player"))
             {
-                enemy.Die();
                 ReturnToPool();
             }
+            else if (other.CompareTag("Enemy"))
+            {
+                if (other.TryGetComponent(out Enemy enemy))
+                {
+                    enemy.Die();
+                    ReturnToPool();
+                }
+            }
         }
     }
-
 }

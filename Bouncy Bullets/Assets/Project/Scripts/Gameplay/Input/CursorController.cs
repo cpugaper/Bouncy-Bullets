@@ -1,35 +1,39 @@
 using UnityEngine;
+using Game.Core;
 
-public class CursorController : MonoBehaviour
+namespace Game.Gameplay
 {
-    private GameManager gameManager;
-    private InputReader input;
-
-    private void Start()
+    public class CursorController : MonoBehaviour
     {
-        gameManager = GameManager.Instance;
-        input = InputReader.Instance;
-    }
+        private GameManager gameManager;
+        private InputReader input;
 
-    private void LateUpdate()
-    {
-        Apply();
-    }
+        private void Start()
+        {
+            gameManager = GameManager.Instance;
+            input = InputReader.Instance;
+        }
 
-    private void OnApplicationFocus(bool hasFocus)
-    {
-        if (hasFocus) Apply();
-    }
+        private void LateUpdate()
+        {
+            Apply();
+        }
 
-    private void Apply()
-    {
-        if (gameManager == null || input == null) return;
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (hasFocus) Apply();
+        }
 
-        bool playing = gameManager.CurrentState == GameState.Playing;
-        bool showCursor = !playing && input.ActiveDevice == InputDeviceKind.Mouse;
-        CursorLockMode lockMode = playing ? CursorLockMode.Confined : CursorLockMode.None;
+        private void Apply()
+        {
+            if (gameManager == null || input == null) return;
 
-        if (Cursor.visible != showCursor) Cursor.visible = showCursor;
-        if (Cursor.lockState != lockMode) Cursor.lockState = lockMode;
+            bool playing = gameManager.CurrentState == GameState.Playing;
+            bool showCursor = !playing && input.ActiveDevice == InputDeviceKind.Mouse;
+            CursorLockMode lockMode = playing ? CursorLockMode.Confined : CursorLockMode.None;
+
+            if (Cursor.visible != showCursor) Cursor.visible = showCursor;
+            if (Cursor.lockState != lockMode) Cursor.lockState = lockMode;
+        }
     }
 }

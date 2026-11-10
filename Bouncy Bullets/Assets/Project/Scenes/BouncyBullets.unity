@@ -14797,6 +14797,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2111467366}
   - component: {fileID: 2111467367}
+  - component: {fileID: 2111467368}
   m_Layer: 0
   m_Name: InputReader
   m_TagString: Untagged
@@ -14832,6 +14833,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Game.Gameplay::InputReader
   settings: {fileID: 11400000, guid: 1750f363ed00d8240bce121e9e640376, type: 2}
+--- !u!114 &2111467368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2111467365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b837658947921da4691d97b0874e7a7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game.Gameplay::CursorController
 --- !u!1 &2111902736
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,39 +1,43 @@
 using TMPro;
 using UnityEngine;
+using Game.Core;
 
-public class ScoreUI : MonoBehaviour
+namespace Game.UI
 {
-    [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI scoreText;
-    [SerializeField] private TextMeshProUGUI highScoreText;
-
-    [Header("Event Channels")]
-    [SerializeField] private IntEventChannelSO scoreUpdatedEventChannel;
-    [SerializeField] private IntEventChannelSO highScoreUpdatedEventChannel;
-
-    private const string ScoreFormat = "D4";
-
-    private void OnEnable()
+    public class ScoreUI : MonoBehaviour
     {
-        if (scoreUpdatedEventChannel != null) scoreUpdatedEventChannel.Subscribe(UpdateScoreText);
-        if (highScoreUpdatedEventChannel != null) highScoreUpdatedEventChannel.Subscribe(UpdateHighScoreText);
+        [Header("UI References")]
+        [SerializeField] private TextMeshProUGUI scoreText;
+        [SerializeField] private TextMeshProUGUI highScoreText;
 
-    }
+        [Header("Event Channels")]
+        [SerializeField] private IntEventChannelSO scoreUpdatedEventChannel;
+        [SerializeField] private IntEventChannelSO highScoreUpdatedEventChannel;
 
-    private void OnDisable()
-    {
-        if (scoreUpdatedEventChannel != null) scoreUpdatedEventChannel.Unsubscribe(UpdateScoreText);
-        if (highScoreUpdatedEventChannel != null) highScoreUpdatedEventChannel.Unsubscribe(UpdateHighScoreText);
+        private const string ScoreFormat = "D4";
 
-    }
+        private void OnEnable()
+        {
+            if (scoreUpdatedEventChannel != null) scoreUpdatedEventChannel.Subscribe(UpdateScoreText);
+            if (highScoreUpdatedEventChannel != null) highScoreUpdatedEventChannel.Subscribe(UpdateHighScoreText);
 
-    private void UpdateScoreText(int newScore)
-    {
-        if (scoreText != null) scoreText.text = newScore.ToString(ScoreFormat);
-    }
+        }
 
-    private void UpdateHighScoreText(int newScore)
-    {
-        if (highScoreText != null) highScoreText.text = newScore.ToString(ScoreFormat);
+        private void OnDisable()
+        {
+            if (scoreUpdatedEventChannel != null) scoreUpdatedEventChannel.Unsubscribe(UpdateScoreText);
+            if (highScoreUpdatedEventChannel != null) highScoreUpdatedEventChannel.Unsubscribe(UpdateHighScoreText);
+
+        }
+
+        private void UpdateScoreText(int newScore)
+        {
+            if (scoreText != null) scoreText.text = newScore.ToString(ScoreFormat);
+        }
+
+        private void UpdateHighScoreText(int newScore)
+        {
+            if (highScoreText != null) highScoreText.text = newScore.ToString(ScoreFormat);
+        }
     }
 }

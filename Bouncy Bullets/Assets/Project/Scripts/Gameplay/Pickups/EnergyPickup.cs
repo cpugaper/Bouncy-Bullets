@@ -1,24 +1,26 @@
-using System;
 using UnityEngine;
 
-public class EnergyPickup : Pickup
+namespace Game.Gameplay
 {
-    [SerializeField] private float energyAmount = 25f;
-
-    protected override bool TryApplyEffect(GameObject player)
+    public class EnergyPickup : Pickup
     {
-        if (player.TryGetComponent(out PlayerTurbo turbo))
+        [SerializeField] private float energyAmount = 25f;
+
+        protected override bool TryApplyEffect(GameObject player)
         {
-            return turbo.TryAddEnergy(energyAmount);
+            if (player.TryGetComponent(out PlayerTurbo turbo))
+            {
+                return turbo.TryAddEnergy(energyAmount);
+            }
+            return false;
         }
-        return false;
-    }
 
-    protected override void PlayPickupSound()
-    {
-        if (AudioManager.Instance != null)
+        protected override void PlayPickupSound()
         {
-            AudioManager.Instance.PlayEnergyPickup();
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayEnergyPickup();
+            }
         }
     }
 }

@@ -1,141 +1,144 @@
 using System.Collections;
 using UnityEngine;
 
-public class VolatileEnemy : Enemy
+namespace Game.Gameplay
 {
-    [Header("Volatile Movement")]
-    [SerializeField] private float speed = 4f;
-
-    [Header("Explosion Mechanics")]
-    [SerializeField] private float overloadDuration = 1.2f;
-    [SerializeField] private float explosionRadius = 5f;
-    [SerializeField] private LayerMask destructionMask;
-    [SerializeField, Range(0.7f, 1f)] private float damageRadiusMultiplier = 0.9f;
-
-    private Vector3 direction;
-    private bool hasCalculatedDirection;
-    private bool isOverloading = false;
-
-    private VolatileEffect visuals;
-    private Coroutine overloadCoroutine;
-
-    private void Awake()
+    public class VolatileEnemy : Enemy
     {
-        visuals = GetComponent<VolatileEffect>();
-    }
+        [Header("Volatile Movement")]
+        [SerializeField] private float speed = 4f;
 
-    private void OnEnable()
-    {
-        hasCalculatedDirection = false;
-        isOverloading = false;
-    }
+        [Header("Explosion Mechanics")]
+        [SerializeField] private float overloadDuration = 1.2f;
+        [SerializeField] private float explosionRadius = 5f;
+        [SerializeField] private LayerMask destructionMask;
+        [SerializeField, Range(0.7f, 1f)] private float damageRadiusMultiplier = 0.9f;
 
-    private void OnDisable()
-    {
-        if (overloadCoroutine != null) StopCoroutine(overloadCoroutine);
-    }
+        private Vector3 direction;
+        private bool hasCalculatedDirection;
+        private bool isOverloading = false;
 
-    protected override void Move()
-    {
-        if (isOverloading) return;
+        private VolatileEffect visuals;
+        private Coroutine overloadCoroutine;
 
-        if (!hasCalculatedDirection)
+        private void Awake()
         {
-            if (PlayerMovement.Instance != null)
+            visuals = GetComponent<VolatileEffect>();
+        }
+
+        private void OnEnable()
+        {
+            hasCalculatedDirection = false;
+            isOverloading = false;
+        }
+
+        private void OnDisable()
+        {
+            if (overloadCoroutine != null) StopCoroutine(overloadCoroutine);
+        }
+
+        protected override void Move()
+        {
+            if (isOverloading) return;
+
+            if (!hasCalculatedDirection)
             {
-                Vector3 playerPos = PlayerMovement.Instance.transform.position;
-                direction = (playerPos - transform.position).normalized;
-                hasCalculatedDirection = true;
+                if (PlayerMovement.Instance != null)
+                {
+                    Vector3 playerPos = PlayerMovement.Instance.transform.position;
+                    direction = (playerPos - transform.position).normalized;
+                    hasCalculatedDirection = true;
+                }
+            }
+
+            transform.position += direction * speed * Time.deltaTime;
+        }
+
+        protected override void CheckBounds()
+        {
+            if (isOverloading) return;
+            base.CheckBounds();
+        }
+
+        protected override void OnTriggerEnter(Collider other)
+        {
+            if (!gameObject.activeInHierarchy || isOverloading) return;
+
+            if (other.CompareTag("BouncyBullet"))
+            {
+                if (addScoreEventChannel != null)
+                {
+                    addScoreEventChannel.RaiseEvent(scoreValue);
+                }
+
+                overloadCoroutine = StartCoroutine(OverloadSequence());
+            }
+            else if (other.CompareTag("EnemyBullet"))
+            {
+                overloadCoroutine = StartCoroutine(OverloadSequence());
+            }
+            else if (other.CompareTag("Player"))
+            {
+                base.OnTriggerEnter(other);
             }
         }
 
-        transform.position += direction * speed * Time.deltaTime;
-    }
-
-    protected override void CheckBounds()
-    {
-        if (isOverloading) return; 
-        base.CheckBounds();
-    }
-
-    protected override void OnTriggerEnter(Collider other)
-    {
-        if (!gameObject.activeInHierarchy || isOverloading) return; 
-
-        if (other.CompareTag("BouncyBullet"))
+        private IEnumerator OverloadSequence()
         {
-            if (addScoreEventChannel != null)
+            isOverloading = true;
+
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayVolatileCharge();
+
+            float timer = 0f;
+            while (timer < overloadDuration)
             {
-                addScoreEventChannel.RaiseEvent(scoreValue);
+                timer += Time.deltaTime;
+                float progress = timer / overloadDuration;
+
+                if (visuals != null) visuals.AnimateOverload(timer, progress, explosionRadius);
+
+                yield return null;
             }
 
-            overloadCoroutine = StartCoroutine(OverloadSequence());
-        }
-        else if (other.CompareTag("EnemyBullet"))
-        {
-            overloadCoroutine = StartCoroutine(OverloadSequence());
-        }
-        else if (other.CompareTag("Player"))
-        {
-            base.OnTriggerEnter(other);
-        }
-    }
-
-    private IEnumerator OverloadSequence()
-    {
-        isOverloading = true;
-
-        if (AudioManager.Instance != null) AudioManager.Instance.PlayVolatileCharge();
-
-        float timer = 0f;
-        while (timer < overloadDuration)
-        {
-            timer += Time.deltaTime;
-            float progress = timer / overloadDuration;
-
-            if (visuals != null) visuals.AnimateOverload(timer, progress, explosionRadius);
-
-            yield return null;
+            Detonate();
         }
 
-        Detonate();
-    }
-
-    private void Detonate()
-    {
-        Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius * damageRadiusMultiplier, destructionMask);
-
-        foreach (Collider hit in hits)
+        private void Detonate()
         {
-            if (hit.gameObject == this.gameObject) continue;
+            Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius * damageRadiusMultiplier, destructionMask);
 
-            if (hit.TryGetComponent(out Enemy enemyHit))
+            foreach (Collider hit in hits)
             {
-                enemyHit.Die();
+                if (hit.gameObject == this.gameObject) continue;
+
+                if (hit.TryGetComponent(out Enemy enemyHit))
+                {
+                    enemyHit.Die();
+                }
+                else if (hit.TryGetComponent(out BouncyBullet bullet))
+                {
+                    bullet.ReturnToPool();
+                }
+                else if (hit.TryGetComponent(out PlayerHealth player))
+                {
+                    if (PlayerShield.HasActiveShield(hit)) continue;
+                    player.Die();
+                }
             }
-            else if (hit.TryGetComponent(out BouncyBullet bullet))
-            {
-                bullet.ReturnToPool();
-            }
-            else if (hit.TryGetComponent(out PlayerHealth player))
-            {
-                if (PlayerShield.HasActiveShield(hit)) continue;
-                player.Die();
-            }
+
+            Die();
         }
 
-        Die();
-    }
-
-    public override void Die()
-    {
-        if (!gameObject.activeInHierarchy) return;
-
-        if (enemyDeathEventChannel != null)
+        public override void Die()
         {
-            enemyDeathEventChannel.RaiseEvent(transform.position);
-        }
+            if (!gameObject.activeInHierarchy) return;
 
-        ReturnToPool();
+            if (enemyDeathEventChannel != null)
+            {
+                enemyDeathEventChannel.RaiseEvent(transform.position);
+            }
+
+            ReturnToPool();
+        }
     }
 }

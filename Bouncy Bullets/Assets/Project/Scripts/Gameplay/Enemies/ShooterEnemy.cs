@@ -1,107 +1,110 @@
 using System.Collections;
 using UnityEngine;
+using Game.Core;
 
-public class ShooterEnemy : Enemy
+namespace Game.Gameplay
 {
-    [Header("Shooter Settings")]
-    [SerializeField] private float speed = 4f;
-    [SerializeField] private float enterDistance = 3f;
-    [SerializeField] private float aimDuration = 0.8f;
-    [SerializeField] private float waitAfterShot = 2f;
-    [SerializeField] private float fireOffset = 1f;
-    [SerializeField] private float arrivalThreshold = 0.05f;  
-    [SerializeField] private float aimRotationSpeed = 10f;
-
-    [Header("References")]
-    [SerializeField] private SpawnBulletEventChannelSO spawnBulletEventChannel;
-
-    private Vector3 retreatDirection;
-    private bool isRetreating = false;
-    private Coroutine sequenceCoroutine;
-    private bool hasCalculatedDirection;
-
-    private void OnEnable()
+    public class ShooterEnemy : Enemy
     {
-        hasCalculatedDirection = false;
-        isRetreating = false;
-    }
+        [Header("Shooter Settings")]
+        [SerializeField] private float speed = 4f;
+        [SerializeField] private float enterDistance = 3f;
+        [SerializeField] private float aimDuration = 0.8f;
+        [SerializeField] private float waitAfterShot = 2f;
+        [SerializeField] private float fireOffset = 1f;
+        [SerializeField] private float arrivalThreshold = 0.05f;
+        [SerializeField] private float aimRotationSpeed = 10f;
 
-    private void OnDisable()
-    {
-        if (sequenceCoroutine != null)
+        [Header("References")]
+        [SerializeField] private SpawnBulletEventChannelSO spawnBulletEventChannel;
+
+        private Vector3 retreatDirection;
+        private bool isRetreating = false;
+        private Coroutine sequenceCoroutine;
+        private bool hasCalculatedDirection;
+
+        private void OnEnable()
         {
-            StopCoroutine(sequenceCoroutine);
-            sequenceCoroutine = null;
-        }
-    }
-
-    private IEnumerator ShooterSequenceRoutine()
-    {
-        Vector3 startPos = transform.position;
-        Vector3 dirToCenter = new Vector3(-startPos.x, 0f, -startPos.z).normalized;
-        dirToCenter.y = 0f;
-
-        Vector3 targetPos = startPos + dirToCenter * enterDistance;
-        retreatDirection = -dirToCenter;
-
-        while (Vector3.Distance(transform.position, targetPos) > arrivalThreshold)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
-            transform.rotation = Quaternion.LookRotation(dirToCenter);
-            yield return null;
+            hasCalculatedDirection = false;
+            isRetreating = false;
         }
 
-        float aimTimer = 0f;
-        while (aimTimer < aimDuration)
+        private void OnDisable()
         {
-            aimTimer += Time.deltaTime;
-
-            if (PlayerMovement.Instance != null)
+            if (sequenceCoroutine != null)
             {
-                Vector3 playerDir = (PlayerMovement.Instance.transform.position - transform.position).normalized;
-                playerDir.y = 0f;
-                if (playerDir != Vector3.zero)
-                {
-                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(playerDir), aimRotationSpeed * Time.deltaTime);
-                }
+                StopCoroutine(sequenceCoroutine);
+                sequenceCoroutine = null;
             }
-            yield return null; 
         }
 
-        if (spawnBulletEventChannel != null)
+        private IEnumerator ShooterSequenceRoutine()
         {
-            Vector3 spawnPos = transform.position + transform.forward * fireOffset;
-            spawnBulletEventChannel.RaiseEvent(BulletType.Homing, spawnPos, transform.rotation);
+            Vector3 startPos = transform.position;
+            Vector3 dirToCenter = new Vector3(-startPos.x, 0f, -startPos.z).normalized;
+            dirToCenter.y = 0f;
 
-            if (AudioManager.Instance != null) AudioManager.Instance.PlayShooterShoot();
+            Vector3 targetPos = startPos + dirToCenter * enterDistance;
+            retreatDirection = -dirToCenter;
+
+            while (Vector3.Distance(transform.position, targetPos) > arrivalThreshold)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
+                transform.rotation = Quaternion.LookRotation(dirToCenter);
+                yield return null;
+            }
+
+            float aimTimer = 0f;
+            while (aimTimer < aimDuration)
+            {
+                aimTimer += Time.deltaTime;
+
+                if (PlayerMovement.Instance != null)
+                {
+                    Vector3 playerDir = (PlayerMovement.Instance.transform.position - transform.position).normalized;
+                    playerDir.y = 0f;
+                    if (playerDir != Vector3.zero)
+                    {
+                        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(playerDir), aimRotationSpeed * Time.deltaTime);
+                    }
+                }
+                yield return null;
+            }
+
+            if (spawnBulletEventChannel != null)
+            {
+                Vector3 spawnPos = transform.position + transform.forward * fireOffset;
+                spawnBulletEventChannel.RaiseEvent(BulletType.Homing, spawnPos, transform.rotation);
+
+                if (AudioManager.Instance != null) AudioManager.Instance.PlayShooterShoot();
+            }
+
+            yield return new WaitForSeconds(waitAfterShot);
+            isRetreating = true;
         }
 
-        yield return new WaitForSeconds(waitAfterShot);
-        isRetreating = true;
+        protected override void Move()
+        {
+            if (!hasCalculatedDirection)
+            {
+                hasCalculatedDirection = true;
+                sequenceCoroutine = StartCoroutine(ShooterSequenceRoutine());
+                return;
+            }
+
+            if (isRetreating)
+            {
+                transform.position += retreatDirection * speed * Time.deltaTime;
+                transform.rotation = Quaternion.LookRotation(retreatDirection);
+            }
+        }
+
+        protected override void CheckBounds()
+        {
+            if (isRetreating)
+            {
+                base.CheckBounds();
+            }
+        }
     }
-
-    protected override void Move()
-    {
-        if (!hasCalculatedDirection)
-        {
-            hasCalculatedDirection = true;
-            sequenceCoroutine = StartCoroutine(ShooterSequenceRoutine());
-            return;
-        }
-
-        if (isRetreating)
-        {
-            transform.position += retreatDirection * speed * Time.deltaTime;
-            transform.rotation = Quaternion.LookRotation(retreatDirection);
-        }
-    }
-
-    protected override void CheckBounds()
-    {
-        if (isRetreating)
-        {
-            base.CheckBounds();
-        }
-    }
-
 }

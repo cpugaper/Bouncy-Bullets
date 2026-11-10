@@ -1,26 +1,30 @@
 using UnityEngine;
+using Game.Core;
 
-public class ScorePickup : Pickup
+namespace Game.Gameplay
 {
-    [SerializeField] private int bonusScore = 5;
-
-    [Header("Event Channels")]
-    [SerializeField] protected IntEventChannelSO addScoreEventChannel;
-
-    protected override bool TryApplyEffect(GameObject player)
+    public class ScorePickup : Pickup
     {
-        if (addScoreEventChannel != null)
+        [SerializeField] private int bonusScore = 5;
+
+        [Header("Event Channels")]
+        [SerializeField] protected IntEventChannelSO addScoreEventChannel;
+
+        protected override bool TryApplyEffect(GameObject player)
         {
-            addScoreEventChannel.RaiseEvent(bonusScore);
+            if (addScoreEventChannel != null)
+            {
+                addScoreEventChannel.RaiseEvent(bonusScore);
+            }
+            return true;
         }
-        return true;
-    }
 
-    protected override void PlayPickupSound()
-    {
-        if (AudioManager.Instance != null)
+        protected override void PlayPickupSound()
         {
-            AudioManager.Instance.PlayScorePickup(); 
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayScorePickup();
+            }
         }
     }
 }
