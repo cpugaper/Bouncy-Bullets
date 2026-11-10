@@ -38,7 +38,7 @@ public class PhaseManager : MonoBehaviour
         if (phases.Length == 0) return;
         if (phasesCoroutine != null) StopCoroutine(phasesCoroutine);
 
-        int savedIndex = SaveManager.Instance != null ? SaveManager.Instance.SavedPhaseIndex : 0;
+        int savedIndex = SaveManager.Instance.SavedPhaseIndex;
         int startIndex = Mathf.Clamp(savedIndex, 0, phases.Length - 1);  
 
         phasesCoroutine = StartCoroutine(RunPhases(startIndex));

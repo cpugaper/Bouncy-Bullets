@@ -18,24 +18,21 @@ public class SmartReticle : MonoBehaviour
     [SerializeField] private float normalHeightOffset = 0.05f;
     [SerializeField] private float lockedHeightOffset = 3f;
 
-    [Header("Settings")]
-    [SerializeField] private GameSettingsSO settings;
-
     private Camera mainCamera;
+    private InputReader input; 
     private Transform playerTransform;
     private bool isPlaying = true;
 
     private void Start()
     {
         mainCamera = Camera.main;
+        input = InputReader.Instance;
+       
         transform.rotation = Quaternion.Euler(90f, 0f, 0f);
         SetMaterial(normalMaterial);
 
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.OnGameStateChanged += HandleGameStateChanged;
-            HandleGameStateChanged(GameManager.Instance.CurrentState);
-        }
+        GameManager.Instance.OnGameStateChanged += HandleGameStateChanged;
+        HandleGameStateChanged(GameManager.Instance.CurrentState);
     }
 
     private void OnDestroy()
@@ -61,9 +58,8 @@ public class SmartReticle : MonoBehaviour
         }
 
         Vector3 playerPos = playerTransform.position;
-        float sensitivity = settings != null ? settings.MouseSensitivity : 1f;
 
-        if (!PointerUtils.TryGetAimInfo(PlayerInputManager.Instance.Controls, mainCamera, playerPos, sensitivity, true, out Vector3 direction, out float distance))
+        if (!PointerUtils.TryGetAimInfo(mainCamera, input.AimScreenPosition, playerPos, out Vector3 direction, out float distance))
             return;
 
         bool isEnemyTargeted = EvaluateTarget(playerPos, direction, distance);

@@ -6,6 +6,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private PositionEventChannelSO playerDeathEventChannel;
 
     private PlayerShield shield;
+    private bool isDead; 
 
     private void Start()
     {
@@ -24,6 +25,9 @@ public class PlayerHealth : MonoBehaviour
 
     public void Die()
     {
+        if (isDead) return;
+        isDead = true;
+
         if (playerDeathEventChannel != null)
         {
             playerDeathEventChannel.RaiseEvent(transform.position);

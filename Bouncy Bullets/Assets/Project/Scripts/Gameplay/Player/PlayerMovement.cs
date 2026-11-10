@@ -19,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
     private Camera mainCamera;
     private PlayerTilt playerTilt;
     private PlayerTurbo turbo;
+    private InputReader input;
 
     private void Awake()
     {
@@ -36,7 +37,8 @@ public class PlayerMovement : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
         turbo = GetComponent<PlayerTurbo>();
         mainCamera = Camera.main;
-
+        input = InputReader.Instance;
+ 
         ApplyInitialImpulse();
     }
 
@@ -55,11 +57,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
-        Vector2 moveInput = PlayerInputManager.Instance != null ? PlayerInputManager.Instance.MoveInput : Vector2.zero;
+        Vector2 moveInput = input.MoveInput;
 
         HandleThrusterEffect(turbo != null && turbo.IsBoosting);
 
-        Vector3 moveDirection = new Vector3(moveInput.x, 0f, moveInput.y);
+        Vector3 moveDirection = new(moveInput.x, 0f, moveInput.y);
         float multiplier = turbo != null ? turbo.SpeedMultiplier : 1f;
         playerRb.AddForce(moveDirection * speed * multiplier);
 
@@ -75,11 +77,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void RotatePlayer()
     {
-        if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
-        if (PlayerInputManager.Instance == null) return;
-
-        float sensitivity = settings != null ? settings.MouseSensitivity : 1f;
-        if (PointerUtils.TryGetAimInfo(PlayerInputManager.Instance.Controls, mainCamera, transform.position, sensitivity, false, out Vector3 direction, out _))
+        float sensitivity = settings != null ? settings.AimSensitivity : 1f;
+        if (PointerUtils.TryGetAimInfo(mainCamera, input.AimScreenPosition, transform.position, out Vector3 direction, out _))
         {
             float targetAngleY = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
             Quaternion targetRotation = Quaternion.Euler(0f, targetAngleY, 0f);
@@ -94,7 +93,6 @@ public class PlayerMovement : MonoBehaviour
     private void ConstrainPlayerPosition()
     {
         ScreenBounds bounds = ScreenBounds.Instance;
-        if (bounds == null) return;
 
         Vector3 currentPos = playerRb.position;
         Vector3 currentVelocity = playerRb.linearVelocity;

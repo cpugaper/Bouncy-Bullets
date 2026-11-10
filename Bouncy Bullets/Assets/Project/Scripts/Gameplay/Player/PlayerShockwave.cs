@@ -17,21 +17,21 @@ public class PlayerShockwave : MonoBehaviour
 
     private int currentCharges = 0;
     private bool isExploding = false;
+    private InputReader input;
 
     public bool HasCharges => currentCharges > 0;
     public bool IsFull => currentCharges >= maxCharges;
 
     private void Start()
     {
+        input = InputReader.Instance;
+
         NotifyUI();
     }
 
     private void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
-        if (PlayerInputManager.Instance == null) return;
-
-        if (HasCharges && !isExploding && PlayerInputManager.Instance.ShockwavePressed)
+        if (HasCharges && !isExploding && input.ShockwavePressed)
         {
             UseShockwave();
         }

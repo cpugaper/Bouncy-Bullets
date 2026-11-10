@@ -17,6 +17,7 @@ public class PlayerShield : MonoBehaviour
     [SerializeField] private FloatEventChannelSO shieldCooldownStartedEventChannel;
 
     private ShieldEffect shieldVisual;
+    private InputReader input;
     private float nextShieldTime = 0f;
 
     private void Awake()
@@ -24,12 +25,14 @@ public class PlayerShield : MonoBehaviour
         shieldVisual = GetComponent<ShieldEffect>();
     }
 
+    private void Start()
+    {
+        input = InputReader.Instance;
+    }
+
     void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
-        if (PlayerInputManager.Instance == null) return;
-
-        if (PlayerInputManager.Instance.ShieldPressed && !IsShieldActive && Time.time >= nextShieldTime)
+        if (input.ShieldPressed && !IsShieldActive && Time.time >= nextShieldTime)
         {
             StartCoroutine(ActivateShield());
         }

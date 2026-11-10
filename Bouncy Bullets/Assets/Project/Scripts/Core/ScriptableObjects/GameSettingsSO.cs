@@ -13,11 +13,11 @@ public class GameSettingsSO : ScriptableObject
 
     private const string MusicKey = "MusicVolume";
     private const string SfxKey = "SFXVolume";
-    private const string SensitivityKey = "MouseSensitivity";
+    private const string SensitivityKey = "AimSensitivity";
 
     public float MusicVolume { get; private set; }
     public float SfxVolume { get; private set; }
-    public float MouseSensitivity { get; private set; }
+    public float AimSensitivity { get; private set; }
 
     public float MinSensitivity => minSensitivity;
     public float MaxSensitivity => maxSensitivity;
@@ -26,7 +26,7 @@ public class GameSettingsSO : ScriptableObject
     {
         MusicVolume = PlayerPrefs.GetFloat(MusicKey, defaultVolume);
         SfxVolume = PlayerPrefs.GetFloat(SfxKey, defaultVolume);
-        MouseSensitivity = ClampSensitivity(PlayerPrefs.GetFloat(SensitivityKey, defaultSensitivity));
+        AimSensitivity = ClampSensitivity(PlayerPrefs.GetFloat(SensitivityKey, defaultSensitivity));
     }
 
     private void OnValidate() => maxSensitivity = Mathf.Max(maxSensitivity, minSensitivity);
@@ -45,8 +45,8 @@ public class GameSettingsSO : ScriptableObject
 
     public void SetSensitivity(float value)
     {
-        MouseSensitivity = ClampSensitivity(value);
-        PlayerPrefs.SetFloat(SensitivityKey, MouseSensitivity);
+        AimSensitivity = ClampSensitivity(value);
+        PlayerPrefs.SetFloat(SensitivityKey, AimSensitivity);
     }
 
     public void Save() => PlayerPrefs.Save();

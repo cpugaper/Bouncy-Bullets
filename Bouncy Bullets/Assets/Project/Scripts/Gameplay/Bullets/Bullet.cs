@@ -6,12 +6,12 @@ public class Bullet : MonoBehaviour
 {
     [Header("Bullet Settings")]
     [SerializeField] protected float speed = 5.0f;
-    [SerializeField] protected float lifetime = 4.0f;
-    [SerializeField] protected float warningDuration = 1.2f;
+    [SerializeField] private float lifetime = 4.0f;
+    [SerializeField] private float warningDuration = 1.2f;
 
-    protected Action OnDespawn;
-    protected Coroutine lifetimeCoroutine;
-    protected BulletEffect bulletVisuals;
+    private Action onDespawn;
+    private Coroutine lifetimeCoroutine;
+    private BulletEffect bulletVisuals;
     protected Rigidbody rb;
 
     protected virtual void Awake()
@@ -20,15 +20,14 @@ public class Bullet : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    public void Initialize(Action despawnCallback)
+    public void SetDespawnCallback(Action callback)
     {
-        OnDespawn = despawnCallback;
+        onDespawn = callback;
     }
 
     public virtual void Launch(Vector3 position, Quaternion rotation)
     {
-        transform.position = position;
-        transform.rotation = rotation;
+        transform.SetPositionAndRotation(position, rotation);
 
         if (rb != null)
         {
@@ -47,13 +46,12 @@ public class Bullet : MonoBehaviour
 
     protected bool BounceInsideView()
     {
-        ScreenBounds bounds = ScreenBounds.Instance;
-        if (bounds == null || rb == null) return false;
+        if (rb == null) return false;
 
         Vector3 position = rb.position;
         Vector3 velocity = rb.linearVelocity;
 
-        if (!bounds.KeepInsideView(ref position, ref velocity)) return false;
+        if (!ScreenBounds.Instance.KeepInsideView(ref position, ref velocity)) return false;
 
         rb.position = position;
         rb.linearVelocity = velocity;
@@ -81,6 +79,8 @@ public class Bullet : MonoBehaviour
 
     public virtual void ReturnToPool()
     {
+        if (!gameObject.activeInHierarchy) return;
+
         if (lifetimeCoroutine != null)
         {
             StopCoroutine(lifetimeCoroutine);
@@ -92,11 +92,8 @@ public class Bullet : MonoBehaviour
             bulletVisuals.ResetVisuals();
         }
 
-        if (OnDespawn != null)
-        {
-            OnDespawn();
-        }
-        else
+        onDespawn?.Invoke();
+        if (onDespawn == null)
         {
             gameObject.SetActive(false);
         }

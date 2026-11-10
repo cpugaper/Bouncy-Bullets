@@ -57,15 +57,12 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
-            return; 
+            return;
         }
+        Instance = this;
     }
 
     private void OnEnable()
@@ -92,11 +89,8 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.OnGameStateChanged += HandleGameStateChanged;
-            HandleGameStateChanged(GameManager.Instance.CurrentState);
-        }
+        GameManager.Instance.OnGameStateChanged += HandleGameStateChanged;
+        HandleGameStateChanged(GameManager.Instance.CurrentState);
 
         ApplySavedAudioSettings();
 

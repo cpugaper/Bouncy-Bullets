@@ -30,6 +30,7 @@ public class ScreenBounds : MonoBehaviour
             return; 
         }
         Instance = this;
+
         cam = GetComponent<Camera>();
         CalculateBounds();
     }

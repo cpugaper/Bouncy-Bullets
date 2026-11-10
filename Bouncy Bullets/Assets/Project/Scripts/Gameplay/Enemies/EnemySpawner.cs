@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class EnemySpawnManager : MonoBehaviour
+public class EnemySpawner : MonoBehaviour
 {
     [Header("Enemy Prefabs")]
     [SerializeField] private GameObject normalEnemyPrefab;

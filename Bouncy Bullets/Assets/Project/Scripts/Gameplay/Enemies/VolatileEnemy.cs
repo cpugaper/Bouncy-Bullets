@@ -10,7 +10,7 @@ public class VolatileEnemy : Enemy
     [SerializeField] private float overloadDuration = 1.2f;
     [SerializeField] private float explosionRadius = 5f;
     [SerializeField] private LayerMask destructionMask;
-    [SerializeField][Range(0.7f, 1f)] private float damageRadiusMultiplier = 0.9f;
+    [SerializeField, Range(0.7f, 1f)] private float damageRadiusMultiplier = 0.9f;
 
     private Vector3 direction;
     private bool hasCalculatedDirection;
@@ -60,7 +60,7 @@ public class VolatileEnemy : Enemy
 
     protected override void OnTriggerEnter(Collider other)
     {
-        if (isOverloading) return; 
+        if (!gameObject.activeInHierarchy || isOverloading) return; 
 
         if (other.CompareTag("BouncyBullet"))
         {
@@ -129,6 +129,8 @@ public class VolatileEnemy : Enemy
 
     public override void Die()
     {
+        if (!gameObject.activeInHierarchy) return;
+
         if (enemyDeathEventChannel != null)
         {
             enemyDeathEventChannel.RaiseEvent(transform.position);

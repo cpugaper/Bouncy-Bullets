@@ -25,8 +25,8 @@ public class ScoreManager : MonoBehaviour
 
     private void HandleRunStarted()
     {
-        currentScore = SaveManager.Instance != null ? SaveManager.Instance.SavedScore : 0;
-        highScore = SaveManager.Instance != null ? SaveManager.Instance.HighScore : 0;
+        currentScore = SaveManager.Instance.SavedScore;
+        highScore = SaveManager.Instance.HighScore;
 
         if (scoreUpdatedEventChannel != null) scoreUpdatedEventChannel.RaiseEvent(currentScore);
         if (highScoreUpdatedEventChannel != null) highScoreUpdatedEventChannel.RaiseEvent(highScore);

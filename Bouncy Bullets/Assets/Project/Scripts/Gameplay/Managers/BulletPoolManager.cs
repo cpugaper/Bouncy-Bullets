@@ -55,7 +55,7 @@ public class BulletPoolManager : MonoBehaviour
     private T CreateBulletInstance<T>(T prefab, ObjectPool<T> targetPool) where T : Bullet
     {
         T instance = Instantiate(prefab, transform);
-        instance.Initialize(() => targetPool.Release(instance));
+        instance.SetDespawnCallback(() => targetPool.Release(instance));
         return instance;
     }
 

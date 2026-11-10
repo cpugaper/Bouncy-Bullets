@@ -13,16 +13,13 @@ public class CameraFollow : MonoBehaviour
 
     private void LateUpdate()
     {
-        ScreenBounds bounds = ScreenBounds.Instance;
-        if (bounds == null) return;
-
         if (playerTransform == null)
         {
             if (PlayerMovement.Instance == null) return;
             playerTransform = PlayerMovement.Instance.transform;
         }
 
-        Vector3 desiredPos = bounds.GetCameraPositionFor(playerTransform.position, baseY);
+        Vector3 desiredPos = ScreenBounds.Instance.GetCameraPositionFor(playerTransform.position, baseY);
         transform.position = Vector3.SmoothDamp(transform.position, desiredPos, ref velocity, smoothTime);
     }
 }

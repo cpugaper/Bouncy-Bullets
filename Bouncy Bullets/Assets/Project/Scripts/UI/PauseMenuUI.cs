@@ -21,7 +21,7 @@ public class PauseMenuUI : MonoBehaviour
 
         musicSlider.SetValueWithoutNotify(settings.MusicVolume);
         sfxSlider.SetValueWithoutNotify(settings.SfxVolume);
-        sensitivitySlider.SetValueWithoutNotify(settings.MouseSensitivity);
+        sensitivitySlider.SetValueWithoutNotify(settings.AimSensitivity);
 
         musicSlider.onValueChanged.AddListener(OnMusicChanged);
         sfxSlider.onValueChanged.AddListener(OnSfxChanged);

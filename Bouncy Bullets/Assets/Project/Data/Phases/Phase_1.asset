@@ -17,5 +17,5 @@ MonoBehaviour:
   endInterval: 3.2
   isEndless: 0
   enemies:
-  - type: 0
-    weight: 1
+  - Type: 0
+    Weight: 1

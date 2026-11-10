@@ -3,22 +3,18 @@ using UnityEngine;
 
 public abstract class Enemy : MonoBehaviour
 {
-    [Header("Enemy Configuration")]
-    [SerializeField] private EnemyType enemyType;
-    public EnemyType Type => enemyType;
-
     [Header("Event Channels")]
     [SerializeField] protected PositionEventChannelSO enemyDeathEventChannel;
+    [SerializeField] protected IntEventChannelSO addScoreEventChannel;
 
     [Header("Score Settings")]
     [SerializeField] protected int scoreValue = 1;
-    [SerializeField] protected IntEventChannelSO addScoreEventChannel;
 
-    private Action OnDespawn;
+    private Action onDespawn;
 
     public void SetDespawnCallback(Action callback)
     {
-        OnDespawn = callback;
+        onDespawn = callback;
     }
 
     protected virtual void Update()
@@ -31,10 +27,7 @@ public abstract class Enemy : MonoBehaviour
 
     protected virtual void CheckBounds()
     {
-        ScreenBounds bounds = ScreenBounds.Instance;
-        if (bounds == null) return;
-
-        Rect view = bounds.GetVisibleArea();
+        Rect view = ScreenBounds.Instance.GetVisibleArea();
         Vector3 pos = transform.position;
         bool isOutOfBounds = pos.x < view.xMin || pos.x > view.xMax || pos.z < view.yMin || pos.z > view.yMax;
 
@@ -59,6 +52,8 @@ public abstract class Enemy : MonoBehaviour
 
     public virtual void Die()
     {
+        if (!gameObject.activeInHierarchy) return;
+
         if (enemyDeathEventChannel != null)
         {
             enemyDeathEventChannel.RaiseEvent(transform.position);
@@ -74,11 +69,8 @@ public abstract class Enemy : MonoBehaviour
 
     protected void ReturnToPool()
     {
-        if (OnDespawn != null)
-        {
-            OnDespawn?.Invoke();
-        }
-        else
+        onDespawn?.Invoke();
+        if (onDespawn == null)
         {
             gameObject.SetActive(false);
         }     

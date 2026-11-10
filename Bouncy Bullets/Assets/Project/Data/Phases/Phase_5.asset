@@ -17,11 +17,11 @@ MonoBehaviour:
   endInterval: 0.9
   isEndless: 1
   enemies:
-  - type: 0
-    weight: 1
-  - type: 2
-    weight: 1
-  - type: 1
-    weight: 1
-  - type: 3
-    weight: 1
+  - Type: 0
+    Weight: 1
+  - Type: 2
+    Weight: 1
+  - Type: 1
+    Weight: 1
+  - Type: 3
+    Weight: 1

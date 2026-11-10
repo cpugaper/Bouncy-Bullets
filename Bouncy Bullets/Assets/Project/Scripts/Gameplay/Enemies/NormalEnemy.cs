@@ -14,10 +14,7 @@ public class NormalEnemy : Enemy
 
     protected override void CheckBounds()
     {
-        ScreenBounds bounds = ScreenBounds.Instance;
-        if (bounds == null) return;
-
-        if (transform.position.z < bounds.GetVisibleArea().yMin) OnExitScreen();
+        if (transform.position.z < ScreenBounds.Instance.GetVisibleArea().yMin) OnExitScreen();
     }
 
     protected override void OnExitScreen()

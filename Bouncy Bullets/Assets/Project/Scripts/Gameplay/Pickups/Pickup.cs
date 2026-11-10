@@ -8,30 +8,33 @@ public abstract class Pickup : MonoBehaviour
     private Action onDespawn;
     private float timer;
 
-    public void SetDespawnCallback(Action callback) => onDespawn = callback;
+    public void SetDespawnCallback(Action callback)
+    {
+        onDespawn = callback;
+    }
 
     private void OnEnable()
     {
         timer = lifetime;
     }
 
-    void Update()
+    private void Update()
     {
         timer -= Time.deltaTime;
         if (timer <= 0f)
         {
-            Despawn();
+            ReturnToPool();
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Player")) return;
+        if (!gameObject.activeInHierarchy || !other.CompareTag("Player")) return;
 
         if (TryApplyEffect(other.gameObject))
         {
             PlayPickupSound();
-            Despawn();
+            ReturnToPool();
         }
     }
 
@@ -39,7 +42,7 @@ public abstract class Pickup : MonoBehaviour
 
     protected abstract void PlayPickupSound();
 
-    private void Despawn()
+    private void ReturnToPool()
     {
         onDespawn?.Invoke();
         if (onDespawn == null)

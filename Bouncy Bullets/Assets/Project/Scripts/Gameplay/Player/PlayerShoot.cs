@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerShoot : MonoBehaviour
 {
     [Header("Shooting Settings")]
-    [SerializeField] private float fireRate = 1f;
+    [SerializeField] private float fireInterval = 1f;
     [SerializeField] private float spawnMargin = 1.5f;
 
     [Header("Event Channels")]
@@ -11,16 +11,19 @@ public class PlayerShoot : MonoBehaviour
     [SerializeField] private SpawnBulletEventChannelSO spawnBulletEventChannel;
 
     private float nextFireTime = 0f;
+    private InputReader input;
+
+    private void Start()
+    {
+        input = InputReader.Instance;
+    }
 
     void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
-        if (PlayerInputManager.Instance == null) return;
-
-        if (PlayerInputManager.Instance.ShootTriggered && Time.time >= nextFireTime)
+        if (input.ShootTriggered && Time.time >= nextFireTime)
         {
             Shoot();
-            nextFireTime = Time.time + fireRate;
+            nextFireTime = Time.time + fireInterval;
         }
     }
 

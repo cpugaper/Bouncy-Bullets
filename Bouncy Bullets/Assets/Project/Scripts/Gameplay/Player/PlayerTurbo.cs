@@ -13,6 +13,7 @@ public class PlayerTurbo : MonoBehaviour
     [SerializeField] private GameEventChannelSO runStartedEventChannel;      
 
     private float energy;
+    private InputReader input;
 
     public bool IsBoosting { get; private set; }
     public bool IsFull => energy >= maxEnergy;
@@ -28,18 +29,19 @@ public class PlayerTurbo : MonoBehaviour
         if (runStartedEventChannel != null) runStartedEventChannel.Unsubscribe(NotifyEnergy);
     }
 
+    private void Start()
+    {
+        input = InputReader.Instance;
+    }
+
     void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Playing) return;
-
         HandleTurbo();
     }
 
     private void HandleTurbo()
     {
-        if (PlayerInputManager.Instance == null) return;
-
-        if (!IsBoosting && IsFull && PlayerInputManager.Instance.TurboPressed)
+        if (!IsBoosting && IsFull && input.TurboPressed)
         {
             IsBoosting = true;
             ApplyTurboImpulse();

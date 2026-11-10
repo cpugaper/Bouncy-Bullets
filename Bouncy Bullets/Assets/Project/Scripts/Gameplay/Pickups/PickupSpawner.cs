@@ -116,7 +116,7 @@ public class PickupSpawner : MonoBehaviour
 
     private void TrySpawn()
     {
-        if (PlayerMovement.Instance == null || ScreenBounds.Instance == null) return;
+        if (PlayerMovement.Instance == null) return;
 
         Rect view = ScreenBounds.Instance.GetVisibleArea();
         Vector3 pos = new Vector3(

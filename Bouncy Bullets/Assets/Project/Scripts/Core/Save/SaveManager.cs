@@ -81,7 +81,7 @@ public class SaveManager : MonoBehaviour
 
     private void HandlePhaseChanged(int phaseNumber)
     {
-        // phaseNumber is 1-based (as raised by PhaseManager); convert it to a 0-based array index.
+        // phaseNumber is 1-based; convert it to a 0-based array index.
         data.savedPhaseIndex = phaseNumber - 1;
         data.savedScore = runScore; 
         data.hasSavedGame = true;

@@ -55,14 +55,10 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        if (continueButton != null && SaveManager.Instance != null)
-            continueButton.interactable = SaveManager.Instance.HasSavedGame;
+        if (continueButton != null) continueButton.interactable = SaveManager.Instance.HasSavedGame;
 
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.OnGameStateChanged += HandleGameStateChanged;
-            HandleGameStateChanged(GameManager.Instance.CurrentState);
-        }
+        GameManager.Instance.OnGameStateChanged += HandleGameStateChanged;
+        HandleGameStateChanged(GameManager.Instance.CurrentState);
     }
 
     private void OnNavigate(InputAction.CallbackContext ctx)
@@ -122,30 +118,11 @@ public class UIManager : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(gameOverFirstSelected);
     }
 
-    public void OnResumeButtonPressed()
-    {
-        if (GameManager.Instance != null) GameManager.Instance.ResumeGame();
-    }
-
-    public void OnRestartButtonPressed()
-    {
-        if (GameManager.Instance != null) GameManager.Instance.RestartGame();
-    }
-
-    public void OnQuitButtonPressed()
-    {
-        if (GameManager.Instance != null) GameManager.Instance.QuitGame();
-    }
-
-    public void OnNewGameButtonPressed()
-    {
-        if (GameManager.Instance != null) GameManager.Instance.NewGame();
-    }
-
-    public void OnContinueButtonPressed()
-    {
-        if (GameManager.Instance != null) GameManager.Instance.ContinueGame();
-    }
+    public void OnResumeButtonPressed() => GameManager.Instance.ResumeGame();
+    public void OnRestartButtonPressed() => GameManager.Instance.RestartGame();
+    public void OnQuitButtonPressed() => GameManager.Instance.QuitGame();
+    public void OnNewGameButtonPressed() => GameManager.Instance.NewGame();
+    public void OnContinueButtonPressed() => GameManager.Instance.ContinueGame();
 
     public void OpenRules()
     {
@@ -162,10 +139,9 @@ public class UIManager : MonoBehaviour
         if (rulesModalPanel != null) rulesModalPanel.SetActive(false);
         if (mainMenuContent != null) mainMenuContent.SetActive(true);
 
-        if (pauseMenuPanel != null && GameManager.Instance != null)
-            pauseMenuPanel.SetActive(GameManager.Instance.CurrentState == GameState.Paused);
+        if (pauseMenuPanel != null) pauseMenuPanel.SetActive(GameManager.Instance.CurrentState == GameState.Paused);
 
-        if (GameManager.Instance != null && GameManager.Instance.CurrentState == GameState.Paused)
+        if (GameManager.Instance.CurrentState == GameState.Paused)
         {
             if (pauseFirstSelected != null) EventSystem.current.SetSelectedGameObject(pauseFirstSelected);
         }

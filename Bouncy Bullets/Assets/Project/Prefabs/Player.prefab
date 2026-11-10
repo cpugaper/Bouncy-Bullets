@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2877943869656496210}
   - component: {fileID: 4846134315935625312}
   - component: {fileID: 784184703098181174}
-  - component: {fileID: 6387182413375492936}
   - component: {fileID: 5744724648072669041}
   - component: {fileID: 5264749518813902279}
   - component: {fileID: 2891958134109996685}
@@ -94,18 +93,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.8306898, y: 0.70500255, z: 2.0526052}
   m_Center: {x: 0.016931042, y: 0.053635955, z: 0.124032855}
---- !u!114 &6387182413375492936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5579297609473609503}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdd28e81def921c4d8d4f59b3c0bbb78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInputManager
 --- !u!114 &5744724648072669041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,7 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30844826531f88c4eaa75060e23a54e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShoot
-  fireRate: 0.5
+  fireInterval: 1
   spawnMargin: 1.5
   shootEventChannel: {fileID: 11400000, guid: af95b10fc6d5d864899fa356d5a003d0, type: 2}
   spawnBulletEventChannel: {fileID: 11400000, guid: 2b4d87d8822cec44a99e272b5a6caa21, type: 2}

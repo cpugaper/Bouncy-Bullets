@@ -5,10 +5,10 @@ using UnityEngine;
 public class PhaseConfig : ScriptableObject
 {
     [Serializable]
-    public struct EnemyEntry
+    private struct EnemyEntry
     {
-        public EnemyType type;
-        [Min(0f)] public float weight;
+        public EnemyType Type;
+        [Min(0f)] public float Weight;
     }
 
     [Header("Timing")]
@@ -37,15 +37,15 @@ public class PhaseConfig : ScriptableObject
         if (enemies == null || enemies.Length == 0) return default;
 
         float total = 0f;
-        foreach (EnemyEntry entry in enemies) total += entry.weight;
+        foreach (EnemyEntry entry in enemies) total += entry.Weight;
 
         float roll = UnityEngine.Random.Range(0f, total);
         foreach (EnemyEntry entry in enemies)
         {
-            roll -= entry.weight;
-            if (roll <= 0f) return entry.type;
+            roll -= entry.Weight;
+            if (roll <= 0f) return entry.Type;
         }
-        return enemies[enemies.Length - 1].type;
+        return enemies[^1].Type;
     }
 
     private void OnValidate()

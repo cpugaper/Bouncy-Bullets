@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class BomberEnemy : Enemy
 {
+    [Header("Phase Settings")]
+    [SerializeField] private float phaseTimeReduction = 0.5f;
+
     [Header("Explosion Settings")]
     [SerializeField] private float baseTimeToExplode = 5f;
     [SerializeField] private float minTimeToExplode = 2f;
@@ -46,7 +49,7 @@ public class BomberEnemy : Enemy
 
     private IEnumerator ExplodeSequence()
     {
-        float dynamicTimeToExplode = Mathf.Max(minTimeToExplode, baseTimeToExplode - ((currentPhase - 1) * 0.5f));
+        float dynamicTimeToExplode = Mathf.Max(minTimeToExplode, baseTimeToExplode - ((currentPhase - 1) * phaseTimeReduction));
         float timer = 0f;
 
         while (timer < dynamicTimeToExplode)
@@ -64,11 +67,12 @@ public class BomberEnemy : Enemy
     {
         if (spawnBulletEventChannel == null) return;
 
-        float randomOffset = Random.Range(0f, 90f);
+        float step = 360f / bulletCount;
+        float randomOffset = Random.Range(0f, step);
 
         for (int i = 0; i < bulletCount; i++)
         {
-            float angle = randomOffset + (i * 90f);
+            float angle = randomOffset + (i * step);
             Quaternion bulletRotation = Quaternion.Euler(0f, angle, 0f);
             spawnBulletEventChannel.RaiseEvent(BulletType.Bouncy, transform.position, bulletRotation);
         }

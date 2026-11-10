@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -10,6 +9,8 @@ public class ShooterEnemy : Enemy
     [SerializeField] private float aimDuration = 0.8f;
     [SerializeField] private float waitAfterShot = 2f;
     [SerializeField] private float fireOffset = 1f;
+    [SerializeField] private float arrivalThreshold = 0.05f;  
+    [SerializeField] private float aimRotationSpeed = 10f;
 
     [Header("References")]
     [SerializeField] private SpawnBulletEventChannelSO spawnBulletEventChannel;
@@ -43,7 +44,7 @@ public class ShooterEnemy : Enemy
         Vector3 targetPos = startPos + dirToCenter * enterDistance;
         retreatDirection = -dirToCenter;
 
-        while (Vector3.Distance(transform.position, targetPos) > 0.05f)
+        while (Vector3.Distance(transform.position, targetPos) > arrivalThreshold)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
             transform.rotation = Quaternion.LookRotation(dirToCenter);
@@ -61,7 +62,7 @@ public class ShooterEnemy : Enemy
                 playerDir.y = 0f;
                 if (playerDir != Vector3.zero)
                 {
-                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(playerDir), 10f * Time.deltaTime);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(playerDir), aimRotationSpeed * Time.deltaTime);
                 }
             }
             yield return null; 

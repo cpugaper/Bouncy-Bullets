@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ShieldEffect : MonoBehaviour
 {
-    [Header("Scale Settings")]
+    [Header("Light Settings")]
     [SerializeField] private Light playerLight;
     [SerializeField] private Color normalColor = Color.cyan;
     [SerializeField] private Color shieldColor = Color.red;
