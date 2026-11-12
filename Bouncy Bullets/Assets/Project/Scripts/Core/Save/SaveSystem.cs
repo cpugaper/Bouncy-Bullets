@@ -1,11 +1,18 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Game.Core
 {
     public static class SaveSystem
     {
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        [DllImport("__Internal")]
+        private static extern void SyncFiles();
+#endif
+
         private static string FilePath => Path.Combine(Application.persistentDataPath, "save.json");
 
         public static SaveData Load()
@@ -31,6 +38,10 @@ namespace Game.Core
 
                 if (File.Exists(FilePath)) File.Replace(tempPath, FilePath, null);
                 else File.Move(tempPath, FilePath);
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+                SyncFiles();
+#endif
             }
             catch (Exception e)
             {
@@ -43,6 +54,10 @@ namespace Game.Core
             try
             {
                 if (File.Exists(FilePath)) File.Delete(FilePath);
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+                SyncFiles();
+#endif
             }
             catch (Exception e)
             {
