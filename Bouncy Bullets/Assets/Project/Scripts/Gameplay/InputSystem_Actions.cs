@@ -236,17 +236,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""daf0c265-fced-4936-baf3-3361cfb010b8"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Shoot"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""232bba2c-73ca-4c62-a118-639fa8ec9992"",
                     ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",

@@ -7331,6 +7331,7 @@ GameObject:
   - component: {fileID: 1880759968}
   - component: {fileID: 1880759967}
   - component: {fileID: 1880759966}
+  - component: {fileID: 1880759970}
   m_Layer: 5
   m_Name: QuitButton
   m_TagString: Untagged
@@ -8062,7 +8063,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ffa23738fe19f2343ba8a570ea8fa8ee, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 72246e5c31f594f4282a7a1cec3ec7d3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13859,6 +13860,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 492633486}
   m_CullTransparentMesh: 1
+--- !u!114 &1880759970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492633486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfb536a025b7a1145b648d09ba0135dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game.UI::Game.UI.HideOnWeb
 --- !u!1 &1885373491
 GameObject:
   m_ObjectHideFlags: 0

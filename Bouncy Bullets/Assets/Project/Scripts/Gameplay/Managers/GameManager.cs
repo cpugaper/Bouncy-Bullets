@@ -42,8 +42,6 @@ namespace Game.Gameplay
             if (playerDeathEventChannel != null) playerDeathEventChannel.Unsubscribe(OnPlayerDeath);
         }
 
-
-
         public void SetState(GameState newState)
         {
             CurrentState = newState;
