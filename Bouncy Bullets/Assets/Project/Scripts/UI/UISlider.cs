@@ -1,7 +1,8 @@
+using Game.Core;
+using Game.Gameplay;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Game.Gameplay;
 
 namespace Game.UI
 {
@@ -10,6 +11,9 @@ namespace Game.UI
         [Header("Settings")]
         [SerializeField] private Color normalColor = Color.white;
         [SerializeField] private Color selectedColor = Color.cyan;
+
+        [Header("Event Channels")]
+        [SerializeField] protected SfxEventChannelSO sfxEventChannel;
 
         private Slider slider;
         private Image fillImage;
@@ -42,10 +46,7 @@ namespace Game.UI
         public void OnSelect(BaseEventData eventData)
         {
             UpdateFillColor(true);
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayUIHover();
-            }
+            if (sfxEventChannel != null) sfxEventChannel.RaiseEvent(SfxType.UIHover);
         }
 
         public void OnDeselect(BaseEventData eventData)

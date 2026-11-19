@@ -1,3 +1,4 @@
+using Game.Core;
 using UnityEngine;
 
 namespace Game.Gameplay
@@ -7,7 +8,9 @@ namespace Game.Gameplay
     {
         [SerializeField, Min(0.01f)] private float smoothTime = 0.2f;
 
-        private Transform playerTransform;
+        [Header("References")]
+        [SerializeField] private TransformReferenceSO playerReference;
+
         private float baseY;
         private Vector3 velocity;
 
@@ -15,13 +18,10 @@ namespace Game.Gameplay
 
         private void LateUpdate()
         {
-            if (playerTransform == null)
-            {
-                if (PlayerMovement.Instance == null) return;
-                playerTransform = PlayerMovement.Instance.transform;
-            }
+            Transform player = playerReference.Value;
+            if (player == null) return;
 
-            Vector3 desiredPos = ScreenBounds.Instance.GetCameraPositionFor(playerTransform.position, baseY);
+            Vector3 desiredPos = ScreenBounds.Instance.GetCameraPositionFor(player.position, baseY);
             transform.position = Vector3.SmoothDamp(transform.position, desiredPos, ref velocity, smoothTime);
         }
     }

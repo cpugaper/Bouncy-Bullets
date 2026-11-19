@@ -11,6 +11,7 @@ namespace Game.Gameplay
         [SerializeField] private EnergyPickup energyPickupPrefab;
         [SerializeField] private ScorePickup scorePickupPrefab;
         [SerializeField] private ShockwavePickup shockwavePickupPrefab;
+        [SerializeField] private TransformReferenceSO playerReference;
 
         [Header("Spawn Weights")]
         [SerializeField, Range(1, 100)] private int scoreWeight = 60;
@@ -119,7 +120,8 @@ namespace Game.Gameplay
 
         private void TrySpawn()
         {
-            if (PlayerMovement.Instance == null) return;
+            Transform player = playerReference.Value;
+            if (player == null) return;
 
             Rect view = ScreenBounds.Instance.GetVisibleArea();
             Vector3 pos = new Vector3(
@@ -128,22 +130,22 @@ namespace Game.Gameplay
                 Random.Range(view.yMin + edgePadding, view.yMax - edgePadding)
             );
 
-            Vector3 playerPos = PlayerMovement.Instance.transform.position;
+            Vector3 playerPos = player.position;
             if (Vector3.Distance(pos, playerPos) < minDistanceFromPlayer) return;
 
-            SpawnWeightedPickup(pos);
+            SpawnWeightedPickup(pos, player);
         }
 
-        private void SpawnWeightedPickup(Vector3 spawnPosition)
+        private void SpawnWeightedPickup(Vector3 spawnPosition, Transform player)
         {
             bool isTurboFull = false;
-            if (PlayerMovement.Instance.TryGetComponent(out PlayerTurbo turbo) && turbo.IsFull)
+            if (player.TryGetComponent(out PlayerTurbo turbo) && turbo.IsFull)
             {
                 isTurboFull = true;
             }
 
             bool isShockwaveFull = false;
-            if (PlayerMovement.Instance.TryGetComponent(out PlayerShockwave shockwaveSystem) && shockwaveSystem.IsFull)
+            if (player.TryGetComponent(out PlayerShockwave shockwaveSystem) && shockwaveSystem.IsFull)
             {
                 isShockwaveFull = true;
             }

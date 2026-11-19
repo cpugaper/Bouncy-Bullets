@@ -159,6 +159,7 @@ MonoBehaviour:
   lifetime: 4
   warningDuration: 1.2
   turnSpeed: 130
+  playerReference: {fileID: 11400000, guid: 8584ab05dc9a1f249867e54dad661493, type: 2}
 --- !u!114 &-7560228661246235008
 MonoBehaviour:
   m_ObjectHideFlags: 0

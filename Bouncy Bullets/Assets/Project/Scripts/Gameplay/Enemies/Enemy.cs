@@ -4,7 +4,7 @@ using Game.Core;
 
 namespace Game.Gameplay
 {
-    public abstract class Enemy : MonoBehaviour
+    public abstract class Enemy : MonoBehaviour, IKillable
     {
         [Header("Event Channels")]
         [SerializeField] protected PositionEventChannelSO enemyDeathEventChannel;

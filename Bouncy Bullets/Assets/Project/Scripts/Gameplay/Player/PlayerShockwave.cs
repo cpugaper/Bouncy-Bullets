@@ -11,9 +11,12 @@ namespace Game.Gameplay
         [SerializeField] private float explosionRadius = 8f;
         [SerializeField] private LayerMask destructionMask;
         [SerializeField] private float expansionDuration = 0.2f;
+        [SerializeField, Range(0.7f, 1f)] private float damageRadiusMultiplier = 0.9f;
+
 
         [Header("Event Channels")]
         [SerializeField] private IntEventChannelSO shockwaveChangedEventChannel;
+        [SerializeField] private SfxEventChannelSO sfxEventChannel;
 
         [Header("Visual Reference")]
         [SerializeField] private Transform shockwaveVisualQuad;
@@ -21,6 +24,9 @@ namespace Game.Gameplay
         private int currentCharges = 0;
         private bool isExploding = false;
         private InputReader input;
+
+        private const int MaxHits = 64;
+        private readonly Collider[] blastBuffer = new Collider[MaxHits];
 
         public bool HasCharges => currentCharges > 0;
         public bool IsFull => currentCharges >= maxCharges;
@@ -68,10 +74,7 @@ namespace Game.Gameplay
         {
             isExploding = true;
 
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayShockwaveCharge();
-            }
+            if (sfxEventChannel != null) sfxEventChannel.RaiseEvent(SfxType.ShockwaveCharge);
 
             float timer = 0f;
             while (timer < expansionDuration)
@@ -93,23 +96,20 @@ namespace Game.Gameplay
 
         private void Detonate()
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius, destructionMask);
+            int count = Physics.OverlapSphereNonAlloc(transform.position, explosionRadius * damageRadiusMultiplier, blastBuffer, destructionMask);
 
-            foreach (Collider hit in hits)
+            for (int i = 0; i < count; i++)
             {
-                if (hit.gameObject == this.gameObject) continue;
+                Collider hit = blastBuffer[i];
+                if (hit.gameObject == gameObject) continue;
 
-                if (hit.TryGetComponent(out Enemy enemyHit))
+                if (hit.TryGetComponent(out VolatileEnemy volatileEnemy))
                 {
-                    enemyHit.Die();
+                    volatileEnemy.TriggerOverload();
                 }
-                else if (hit.TryGetComponent(out BouncyBullet bullet))
+                else if (hit.TryGetComponent(out IKillable target))
                 {
-                    bullet.ReturnToPool();
-                }
-                else if (hit.TryGetComponent(out HomingBullet enemyBullet))
-                {
-                    enemyBullet.ReturnToPool();
+                    target.Die();
                 }
             }
 

@@ -1,10 +1,11 @@
+using Game.Core;
 using System;
 using System.Collections;
 using UnityEngine;
 
 namespace Game.Gameplay
 {
-    public class Bullet : MonoBehaviour
+    public class Bullet : MonoBehaviour, IKillable
     {
         [Header("Bullet Settings")]
         [SerializeField] protected float speed = 5.0f;
@@ -100,5 +101,7 @@ namespace Game.Gameplay
                 gameObject.SetActive(false);
             }
         }
+
+        public void Die() => ReturnToPool();
     }
 }

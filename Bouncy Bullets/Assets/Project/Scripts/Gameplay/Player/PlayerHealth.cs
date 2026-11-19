@@ -3,7 +3,7 @@ using Game.Core;
 
 namespace Game.Gameplay
 {
-    public class PlayerHealth : MonoBehaviour
+    public class PlayerHealth : MonoBehaviour, IKillable
     {
         [Header("Event Channels")]
         [SerializeField] private PositionEventChannelSO playerDeathEventChannel;
@@ -29,6 +29,7 @@ namespace Game.Gameplay
         public void Die()
         {
             if (isDead) return;
+            if (shield != null && shield.IsShieldActive) return;
             isDead = true;
 
             if (playerDeathEventChannel != null)

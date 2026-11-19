@@ -103,7 +103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ff2d18a13477af42936c1bcac7924be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SmartReticle
-  playerTransform: {fileID: 2877943869656496210, guid: e277d5d7e8e8b844188ff3d4e9172587, type: 3}
   reticleRenderer: {fileID: 23151588493716686}
   normalMaterial: {fileID: 2100000, guid: ea5278791adcb5e4fab1873c3e2e1aeb, type: 2}
   lockedMaterial: {fileID: 2100000, guid: c22514b3f614d04438d0d4636b1609bd, type: 2}
@@ -114,4 +113,4 @@ MonoBehaviour:
   smoothSpeed: 25
   normalHeightOffset: 0.05
   lockedHeightOffset: 3
-  settings: {fileID: 11400000, guid: 1750f363ed00d8240bce121e9e640376, type: 2}
+  playerReference: {fileID: 11400000, guid: 8584ab05dc9a1f249867e54dad661493, type: 2}

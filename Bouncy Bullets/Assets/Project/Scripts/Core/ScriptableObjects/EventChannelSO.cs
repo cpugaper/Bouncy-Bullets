@@ -10,6 +10,6 @@ namespace Game.Core
         public void Subscribe(Action<T> listener) => onEventRaised += listener;
         public void Unsubscribe(Action<T> listener) => onEventRaised -= listener;
 
-        public void RaiseEvent(T position) => onEventRaised?.Invoke(position);
+        public void RaiseEvent(T value) => onEventRaised?.Invoke(value);
     }
 }

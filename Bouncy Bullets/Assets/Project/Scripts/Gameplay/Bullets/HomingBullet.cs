@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.Core;
 
 namespace Game.Gameplay
 {
@@ -6,6 +7,9 @@ namespace Game.Gameplay
     {
         [Header("Homing Settings")]
         [SerializeField] private float turnSpeed = 130f;
+
+        [Header("References")]
+        [SerializeField] private TransformReferenceSO playerReference;
 
         private void FixedUpdate()
         {
@@ -15,9 +19,10 @@ namespace Game.Gameplay
 
         private void HomingMovement()
         {
-            if (PlayerMovement.Instance != null)
+            Transform player = playerReference.Value;
+            if (player != null)
             {
-                Vector3 targetDir = (PlayerMovement.Instance.transform.position - transform.position).normalized;
+                Vector3 targetDir = (player.position - transform.position).normalized;
                 targetDir.y = 0f;
 
                 if (targetDir != Vector3.zero)

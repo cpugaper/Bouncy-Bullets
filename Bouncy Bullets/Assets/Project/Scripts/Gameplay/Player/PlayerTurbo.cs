@@ -14,6 +14,7 @@ namespace Game.Gameplay
         [Header("Event Channels")]
         [SerializeField] private FloatEventChannelSO turboChangedEventChannel;
         [SerializeField] private GameEventChannelSO runStartedEventChannel;
+        [SerializeField] private SfxEventChannelSO sfxEventChannel;
 
         private float energy;
         private InputReader input;
@@ -49,10 +50,7 @@ namespace Game.Gameplay
                 IsBoosting = true;
                 ApplyTurboImpulse();
 
-                if (AudioManager.Instance != null)
-                {
-                    AudioManager.Instance.PlayTurbo();
-                }
+                if (sfxEventChannel != null) sfxEventChannel.RaiseEvent(SfxType.Turbo);
             }
 
             if (IsBoosting)

@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using System;
 using Game.Core;
 
 namespace Game.Gameplay
 {
     public class AudioManager : MonoBehaviour
     {
-        public static AudioManager Instance { get; private set; }
-
         [Header("Audio Sources")]
         [SerializeField] private AudioSource sfxAudioSource;
         [SerializeField] private AudioSource uiAudioSource;
@@ -23,25 +22,11 @@ namespace Game.Gameplay
         [SerializeField] private AudioClip shieldActiveMusic;
         [SerializeField] private AudioClip backgroundMusic;
 
-        [Header("Gameplay Audio Clips")]
+        [Header("Audio Clips")]
         [SerializeField] private AudioClip enemyDeathSFX;
         [SerializeField] private AudioClip playerDeathSFX;
         [SerializeField] private AudioClip shootSFX;
-        [SerializeField] private AudioClip turboSFX;
-        [SerializeField] private AudioClip shockwaveChargeSFX;
-
-        [Header("Pickup Audio Clips")]
-        [SerializeField] private AudioClip energyPickupSFX;
-        [SerializeField] private AudioClip scorePickupSFX;
-        [SerializeField] private AudioClip shockwavePickupSFX;
-
-        [Header("Enemy Audio Clips")]
-        [SerializeField] private AudioClip shooterShootSFX;
-        [SerializeField] private AudioClip volatileChargeSFX;
-
-        [Header("UI Audio Clips")]
-        [SerializeField] private AudioClip uiClickSFX;
-        [SerializeField] private AudioClip uiHoverSFX;
+        [SerializeField] private SfxEntry[] sfxLibrary;
 
         [Header("Event Channels")]
         [SerializeField] private PositionEventChannelSO enemyDeathEventChannel;
@@ -49,6 +34,7 @@ namespace Game.Gameplay
         [SerializeField] private GameEventChannelSO shootEventChannel;
         [SerializeField] private GameEventChannelSO shieldActivatedEventChannel;
         [SerializeField] private GameEventChannelSO shieldDeactivatedEventChannel;
+        [SerializeField] private SfxEventChannelSO sfxEventChannel;
 
         [Header("Settings Event Channels")]
         [SerializeField] private FloatEventChannelSO musicVolumeChangedEventChannel;
@@ -57,14 +43,12 @@ namespace Game.Gameplay
 
         private bool shieldWasPlayingBeforePause = false;
 
-        private void Awake()
+        [Serializable]
+        private struct SfxEntry
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            Instance = this;
+            public SfxType Type;
+            public AudioClip Clip;
+            public bool UseUISource;
         }
 
         private void OnEnable()
@@ -76,6 +60,7 @@ namespace Game.Gameplay
             if (shieldDeactivatedEventChannel != null) shieldDeactivatedEventChannel.Subscribe(StopShieldMusic);
             if (musicVolumeChangedEventChannel != null) musicVolumeChangedEventChannel.Subscribe(SetMusicVolume);
             if (sfxVolumeChangedEventChannel != null) sfxVolumeChangedEventChannel.Subscribe(SetSFXVolume);
+            if (sfxEventChannel != null) sfxEventChannel.Subscribe(HandleSfx);
         }
 
         private void OnDisable()
@@ -87,6 +72,7 @@ namespace Game.Gameplay
             if (shieldDeactivatedEventChannel != null) shieldDeactivatedEventChannel.Unsubscribe(StopShieldMusic);
             if (musicVolumeChangedEventChannel != null) musicVolumeChangedEventChannel.Unsubscribe(SetMusicVolume);
             if (sfxVolumeChangedEventChannel != null) sfxVolumeChangedEventChannel.Unsubscribe(SetSFXVolume);
+            if (sfxEventChannel != null) sfxEventChannel.Unsubscribe(HandleSfx);
         }
 
         private void Start()
@@ -118,6 +104,18 @@ namespace Game.Gameplay
             if (audioMixer == null) return;
             float dB = value > 0.0001f ? Mathf.Log10(value) * 20f : -80f;
             audioMixer.SetFloat(paramName, dB);
+        }
+
+        private void HandleSfx(SfxType type)
+        {
+            foreach (SfxEntry entry in sfxLibrary)
+            {
+                if (entry.Type != type) continue;
+
+                if (entry.UseUISource) PlayUISFX(entry.Clip);
+                else PlaySFX(entry.Clip);
+                return;
+            }
         }
 
         private void HandleGameStateChanged(GameState state)
@@ -158,52 +156,40 @@ namespace Game.Gameplay
             }
         }
 
-        public void PlayEnemyDeath(Vector3 position) => PlaySFX(enemyDeathSFX);
-        public void PlayPlayerDeath(Vector3 position)
+        private void PlayEnemyDeath(Vector3 position) => PlaySFX(enemyDeathSFX);
+        private void PlayPlayerDeath(Vector3 position)
         {
             StopAllSFX();
             StopShieldMusic();
             PlaySFX(playerDeathSFX);
         }
-        public void PlayShoot() => PlaySFX(shootSFX);
-        public void PlayTurbo() => PlaySFX(turboSFX);
-        public void PlayShockwaveCharge() => PlaySFX(shockwaveChargeSFX);
+        private void PlayShoot() => PlaySFX(shootSFX);
 
-        public void PlayEnergyPickup() => PlaySFX(energyPickupSFX);
-        public void PlayScorePickup() => PlaySFX(scorePickupSFX);
-        public void PlayShockwavePickup() => PlaySFX(shockwavePickupSFX);
-
-        public void PlayUIClick() => PlayUISFX(uiClickSFX);
-        public void PlayUIHover() => PlayUISFX(uiHoverSFX);
-
-        public void PlayShooterShoot() => PlaySFX(shooterShootSFX);
-        public void PlayVolatileCharge() => PlaySFX(volatileChargeSFX);
-
-        public void PlayShieldMusic()
+        private void PlayShieldMusic()
         {
             backgroundMusicSource.Pause();
             shieldMusicSource.Play();
         }
 
-        public void StopShieldMusic()
+        private void StopShieldMusic()
         {
             shieldMusicSource.Stop();
             backgroundMusicSource.UnPause();
         }
 
-        public void PlaySFX(AudioClip clip)
+        private void PlaySFX(AudioClip clip)
         {
             if (clip != null && sfxAudioSource != null)
                 sfxAudioSource.PlayOneShot(clip);
         }
 
-        public void PlayUISFX(AudioClip clip)
+        private void PlayUISFX(AudioClip clip)
         {
             if (clip != null && uiAudioSource != null)
                 uiAudioSource.PlayOneShot(clip);
         }
 
-        public void StopAllSFX()
+        private void StopAllSFX()
         {
             if (sfxAudioSource != null)
                 sfxAudioSource.Stop();

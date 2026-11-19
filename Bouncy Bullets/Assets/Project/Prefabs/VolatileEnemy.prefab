@@ -720,10 +720,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea2e8237ae476344a8fa5a4525c7ea89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VolatileEnemy
-  enemyType: 0
   enemyDeathEventChannel: {fileID: 11400000, guid: b8fe3f5ff68d0ac4db6d9edc17aea79b, type: 2}
-  scoreValue: -5
   addScoreEventChannel: {fileID: 11400000, guid: 16bbf82dd4ef4a04b827b058c79a5199, type: 2}
+  scoreValue: -5
   speed: 4
   overloadDuration: 3
   explosionRadius: 6
@@ -731,6 +730,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 448
   damageRadiusMultiplier: 0.9
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
+  playerReference: {fileID: 11400000, guid: 8584ab05dc9a1f249867e54dad661493, type: 2}
 --- !u!114 &2420963973163369238
 MonoBehaviour:
   m_ObjectHideFlags: 0

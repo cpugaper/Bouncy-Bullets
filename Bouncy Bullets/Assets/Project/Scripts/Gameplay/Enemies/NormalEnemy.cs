@@ -7,8 +7,11 @@ namespace Game.Gameplay
     {
         [SerializeField] private float speed = 3f;
 
-        [Header("References")]
+        [Header("Event Channels")]
         [SerializeField] private SpawnBulletEventChannelSO spawnBulletEventChannel;
+
+        [Header("References")]
+        [SerializeField] private TransformReferenceSO playerReference;
 
         protected override void Move()
         {
@@ -25,10 +28,11 @@ namespace Game.Gameplay
             if (spawnBulletEventChannel != null)
             {
                 Vector3 shootDirection = Vector3.back;
+                Transform player = playerReference.Value;
 
-                if (PlayerMovement.Instance != null)
+                if (player != null)
                 {
-                    Vector3 playerPos = PlayerMovement.Instance.transform.position;
+                    Vector3 playerPos = player.position;
                     shootDirection = (playerPos - transform.position).normalized;
                     shootDirection.y = 0f;
                 }

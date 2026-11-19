@@ -128,3 +128,4 @@ MonoBehaviour:
   lifetime: 12
   bonusScore: 5
   addScoreEventChannel: {fileID: 11400000, guid: 16bbf82dd4ef4a04b827b058c79a5199, type: 2}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}

@@ -1,9 +1,12 @@
+using Game.Core;
 using UnityEngine;
 
 namespace Game.Gameplay
 {
     public class ShockwavePickup : Pickup
     {
+        protected override SfxType PickupSfx => SfxType.ShockwavePickup;
+
         protected override bool TryApplyEffect(GameObject player)
         {
             if (player.TryGetComponent(out PlayerShockwave shockwave))
@@ -11,14 +14,6 @@ namespace Game.Gameplay
                 return shockwave.TryAddShockwave();
             }
             return false;
-        }
-
-        protected override void PlayPickupSound()
-        {
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayShockwavePickup();
-            }
         }
     }
 }

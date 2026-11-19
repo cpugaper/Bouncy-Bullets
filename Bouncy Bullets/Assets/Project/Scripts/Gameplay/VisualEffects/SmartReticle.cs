@@ -7,6 +7,7 @@ namespace Game.Gameplay
     {
         [Header("References")]
         [SerializeField] private MeshRenderer reticleRenderer;
+        [SerializeField] private TransformReferenceSO playerReference;
 
         [Header("Materials")]
         [SerializeField] private Material normalMaterial;
@@ -23,7 +24,6 @@ namespace Game.Gameplay
 
         private Camera mainCamera;
         private InputReader input;
-        private Transform playerTransform;
         private bool isPlaying = true;
 
         private void Start()
@@ -54,13 +54,10 @@ namespace Game.Gameplay
         {
             if (!isPlaying || mainCamera == null) return;
 
-            if (playerTransform == null)
-            {
-                if (PlayerMovement.Instance == null) return;
-                playerTransform = PlayerMovement.Instance.transform;
-            }
+            Transform player = playerReference.Value;
+            if (player == null) return;
 
-            Vector3 playerPos = playerTransform.position;
+            Vector3 playerPos = player.position;
 
             if (!PointerUtils.TryGetAimInfo(mainCamera, input.AimScreenPosition, playerPos, out Vector3 direction, out float distance))
                 return;

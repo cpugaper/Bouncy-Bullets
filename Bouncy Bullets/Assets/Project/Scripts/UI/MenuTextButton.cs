@@ -1,17 +1,22 @@
+using Game.Core;
+using Game.Gameplay;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Game.Gameplay;
 
 namespace Game.UI
 {
     [RequireComponent(typeof(Button))]
     public class MenuTextButton : MonoBehaviour, IPointerEnterHandler, IPointerMoveHandler, ISelectHandler, IDeselectHandler
     {
+        [Header("Button Settings")]
         [SerializeField] private TextMeshProUGUI text;
         [SerializeField] private GameObject arrow;
         [SerializeField] private Material glowMaterial;
+
+        [Header("Event Channels")]
+        [SerializeField] protected SfxEventChannelSO sfxEventChannel;
 
         private Button button;
         private Material normalMaterial;
@@ -34,7 +39,7 @@ namespace Game.UI
         public void OnSelect(BaseEventData e)
         {
             SetHighlighted(true);
-            if (AudioManager.Instance != null) AudioManager.Instance.PlayUIHover();
+            if (sfxEventChannel != null) sfxEventChannel.RaiseEvent(SfxType.UIHover);
         }
 
         public void OnDeselect(BaseEventData e) => SetHighlighted(false);
@@ -44,7 +49,7 @@ namespace Game.UI
 
         private void OnButtonClicked()
         {
-            if (AudioManager.Instance != null) AudioManager.Instance.PlayUIClick();
+            if (sfxEventChannel != null) sfxEventChannel.RaiseEvent(SfxType.UIClick);
         }
 
         private void TakeSelection()

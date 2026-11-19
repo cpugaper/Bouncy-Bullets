@@ -26,23 +26,27 @@ namespace Game.Core
 
         private void OnEnable()
         {
-            MusicVolume = PlayerPrefs.GetFloat(MusicKey, defaultVolume);
-            SfxVolume = PlayerPrefs.GetFloat(SfxKey, defaultVolume);
+            MusicVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MusicKey, defaultVolume));
+            SfxVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(SfxKey, defaultVolume));
             AimSensitivity = ClampSensitivity(PlayerPrefs.GetFloat(SensitivityKey, defaultSensitivity));
         }
 
-        private void OnValidate() => maxSensitivity = Mathf.Max(maxSensitivity, minSensitivity);
+        private void OnValidate()
+        {
+            maxSensitivity = Mathf.Max(maxSensitivity, minSensitivity);
+            defaultSensitivity = ClampSensitivity(defaultSensitivity);
+        }
 
         public void SetMusicVolume(float value)
         {
-            MusicVolume = value;
-            PlayerPrefs.SetFloat(MusicKey, value);
+            MusicVolume = Mathf.Clamp01(value);
+            PlayerPrefs.SetFloat(MusicKey, MusicVolume);
         }
 
         public void SetSfxVolume(float value)
         {
-            SfxVolume = value;
-            PlayerPrefs.SetFloat(SfxKey, value);
+            SfxVolume = Mathf.Clamp01(value);
+            PlayerPrefs.SetFloat(SfxKey, SfxVolume);
         }
 
         public void SetSensitivity(float value)

@@ -10,6 +10,9 @@ namespace Game.Gameplay
         [Header("Event Channels")]
         [SerializeField] protected IntEventChannelSO addScoreEventChannel;
 
+        protected override SfxType PickupSfx => SfxType.ScorePickup;
+        
+
         protected override bool TryApplyEffect(GameObject player)
         {
             if (addScoreEventChannel != null)
@@ -17,14 +20,6 @@ namespace Game.Gameplay
                 addScoreEventChannel.RaiseEvent(bonusScore);
             }
             return true;
-        }
-
-        protected override void PlayPickupSound()
-        {
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayScorePickup();
-            }
         }
     }
 }

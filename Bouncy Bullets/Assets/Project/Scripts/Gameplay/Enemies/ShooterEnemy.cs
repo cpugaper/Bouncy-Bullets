@@ -15,8 +15,12 @@ namespace Game.Gameplay
         [SerializeField] private float arrivalThreshold = 0.05f;
         [SerializeField] private float aimRotationSpeed = 10f;
 
-        [Header("References")]
+        [Header("Event Channels")]
         [SerializeField] private SpawnBulletEventChannelSO spawnBulletEventChannel;
+        [SerializeField] private SfxEventChannelSO sfxEventChannel;
+
+        [Header("References")]
+        [SerializeField] private TransformReferenceSO playerReference;
 
         private Vector3 retreatDirection;
         private bool isRetreating = false;
@@ -59,9 +63,10 @@ namespace Game.Gameplay
             {
                 aimTimer += Time.deltaTime;
 
-                if (PlayerMovement.Instance != null)
+                Transform player = playerReference.Value;
+                if (player != null)
                 {
-                    Vector3 playerDir = (PlayerMovement.Instance.transform.position - transform.position).normalized;
+                    Vector3 playerDir = (player.position - transform.position).normalized;
                     playerDir.y = 0f;
                     if (playerDir != Vector3.zero)
                     {
@@ -76,7 +81,7 @@ namespace Game.Gameplay
                 Vector3 spawnPos = transform.position + transform.forward * fireOffset;
                 spawnBulletEventChannel.RaiseEvent(BulletType.Homing, spawnPos, transform.rotation);
 
-                if (AudioManager.Instance != null) AudioManager.Instance.PlayShooterShoot();
+                if (sfxEventChannel != null) sfxEventChannel.RaiseEvent(SfxType.ShooterShoot);
             }
 
             yield return new WaitForSeconds(waitAfterShot);

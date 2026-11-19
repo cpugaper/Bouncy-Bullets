@@ -591,6 +591,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UISlider
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 0, g: 1, b: 1, a: 1}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!1 &151702618
 GameObject:
   m_ObjectHideFlags: 0
@@ -6195,6 +6196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
   smoothTime: 0.05
+  playerReference: {fileID: 11400000, guid: 8584ab05dc9a1f249867e54dad661493, type: 2}
 --- !u!1 &392058332
 GameObject:
   m_ObjectHideFlags: 0
@@ -6992,6 +6994,7 @@ MonoBehaviour:
   text: {fileID: 904083226}
   arrow: {fileID: 0}
   glowMaterial: {fileID: 0}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!95 &452091445
 Animator:
   serializedVersion: 7
@@ -7318,6 +7321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UISlider
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 0, g: 1, b: 1, a: 1}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!1 &492633486
 GameObject:
   m_ObjectHideFlags: 0
@@ -7616,6 +7620,7 @@ MonoBehaviour:
   text: {fileID: 1564277355}
   arrow: {fileID: 973485414}
   glowMaterial: {fileID: 2100000, guid: 51f62dd76c93cf746ab202ba0b7b69e1, type: 2}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!95 &556056746
 Animator:
   serializedVersion: 7
@@ -7820,6 +7825,7 @@ MonoBehaviour:
   text: {fileID: 908458108}
   arrow: {fileID: 0}
   glowMaterial: {fileID: 0}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!1 &635200933
 GameObject:
   m_ObjectHideFlags: 0
@@ -7980,6 +7986,7 @@ MonoBehaviour:
   energyPickupPrefab: {fileID: 5719216319417667737, guid: 5db6ffad01d47e341ab0a1b65dc85d37, type: 3}
   scorePickupPrefab: {fileID: 1310721659681315819, guid: 81444e6df12073849970806d5abb4660, type: 3}
   shockwavePickupPrefab: {fileID: 4171924779097725926, guid: 7e1ef7840c9b71c42a459f7faad7eebe, type: 3}
+  playerReference: {fileID: 11400000, guid: 8584ab05dc9a1f249867e54dad661493, type: 2}
   scoreWeight: 60
   energyWeight: 50
   shockwaveWeight: 30
@@ -8835,6 +8842,7 @@ MonoBehaviour:
   text: {fileID: 451351155}
   arrow: {fileID: 0}
   glowMaterial: {fileID: 0}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!1 &790608591
 GameObject:
   m_ObjectHideFlags: 0
@@ -10967,7 +10975,7 @@ GameObject:
   - component: {fileID: 1148037337}
   - component: {fileID: 1148037336}
   m_Layer: 0
-  m_Name: SpawnManager
+  m_Name: EnemySpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10998,6 +11006,7 @@ MonoBehaviour:
   defaultCapacityPerType: 10
   maxSizePerType: 20
   phaseManager: {fileID: 442511046}
+  playerReference: {fileID: 11400000, guid: 8584ab05dc9a1f249867e54dad661493, type: 2}
 --- !u!4 &1148037337
 Transform:
   m_ObjectHideFlags: 0
@@ -11970,20 +11979,40 @@ MonoBehaviour:
   enemyDeathSFX: {fileID: 8300000, guid: 7c2de8e149d8346748fb31ed14cc7986, type: 3}
   playerDeathSFX: {fileID: 8300000, guid: eb8998f3b3d3a49db96a634bf39ed153, type: 3}
   shootSFX: {fileID: 8300000, guid: 31fce46de4adb42a9904d8d68bde62f2, type: 3}
-  turboSFX: {fileID: 8300000, guid: e181df306124132419ffb8fada1058c3, type: 3}
-  shockwaveChargeSFX: {fileID: 8300000, guid: 28f7df2bd402ec44782932062a6a0400, type: 3}
-  energyPickupSFX: {fileID: 8300000, guid: e7d00475d2aa2084ab8754eaeb5da561, type: 3}
-  scorePickupSFX: {fileID: 8300000, guid: ce78999507d96a04f9f62606974a2451, type: 3}
-  shockwavePickupSFX: {fileID: 8300000, guid: 59b62b0826aadb04fadd8addf1b9b9d7, type: 3}
-  shooterShootSFX: {fileID: 8300000, guid: 3ea249c472637f3438f6614ec8a9bba4, type: 3}
-  volatileChargeSFX: {fileID: 8300000, guid: 1e31ea7dae2598d4e9569290da9ca265, type: 3}
-  uiClickSFX: {fileID: 8300000, guid: da87512076eb14593b04fb7e58cad6b0, type: 3}
-  uiHoverSFX: {fileID: 8300000, guid: abca7b6d2197d4b31a1269c2d331bbd3, type: 3}
+  sfxLibrary:
+  - Type: 0
+    Clip: {fileID: 8300000, guid: e181df306124132419ffb8fada1058c3, type: 3}
+    UseUISource: 0
+  - Type: 1
+    Clip: {fileID: 8300000, guid: 28f7df2bd402ec44782932062a6a0400, type: 3}
+    UseUISource: 0
+  - Type: 2
+    Clip: {fileID: 8300000, guid: 3ea249c472637f3438f6614ec8a9bba4, type: 3}
+    UseUISource: 0
+  - Type: 3
+    Clip: {fileID: 8300000, guid: 1e31ea7dae2598d4e9569290da9ca265, type: 3}
+    UseUISource: 0
+  - Type: 4
+    Clip: {fileID: 8300000, guid: e7d00475d2aa2084ab8754eaeb5da561, type: 3}
+    UseUISource: 0
+  - Type: 5
+    Clip: {fileID: 8300000, guid: ce78999507d96a04f9f62606974a2451, type: 3}
+    UseUISource: 0
+  - Type: 6
+    Clip: {fileID: 8300000, guid: 59b62b0826aadb04fadd8addf1b9b9d7, type: 3}
+    UseUISource: 0
+  - Type: 7
+    Clip: {fileID: 8300000, guid: da87512076eb14593b04fb7e58cad6b0, type: 3}
+    UseUISource: 1
+  - Type: 8
+    Clip: {fileID: 8300000, guid: abca7b6d2197d4b31a1269c2d331bbd3, type: 3}
+    UseUISource: 1
   enemyDeathEventChannel: {fileID: 11400000, guid: b8fe3f5ff68d0ac4db6d9edc17aea79b, type: 2}
   playerDeathEventChannel: {fileID: 11400000, guid: 46787a97d9a32bd44bdf5c8b73622af0, type: 2}
   shootEventChannel: {fileID: 11400000, guid: af95b10fc6d5d864899fa356d5a003d0, type: 2}
   shieldActivatedEventChannel: {fileID: 11400000, guid: 6b48b6a166d20b04ea9b1dca9be7eb39, type: 2}
   shieldDeactivatedEventChannel: {fileID: 11400000, guid: 08f948482e590c24596dfa636f931038, type: 2}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
   musicVolumeChangedEventChannel: {fileID: 11400000, guid: 1799bf4040977564eae6ed2bef24db5d, type: 2}
   sfxVolumeChangedEventChannel: {fileID: 11400000, guid: df68d6e609554b04392aafc49061464d, type: 2}
   settings: {fileID: 11400000, guid: 1750f363ed00d8240bce121e9e640376, type: 2}
@@ -12559,6 +12588,7 @@ MonoBehaviour:
   text: {fileID: 445215036}
   arrow: {fileID: 151702618}
   glowMaterial: {fileID: 2100000, guid: 51f62dd76c93cf746ab202ba0b7b69e1, type: 2}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!95 &1543320348
 Animator:
   serializedVersion: 7
@@ -12865,6 +12895,7 @@ MonoBehaviour:
   text: {fileID: 1986259321}
   arrow: {fileID: 2111902736}
   glowMaterial: {fileID: 2100000, guid: 51f62dd76c93cf746ab202ba0b7b69e1, type: 2}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!95 &1564864055
 Animator:
   serializedVersion: 7
@@ -13087,6 +13118,7 @@ MonoBehaviour:
   text: {fileID: 214933482}
   arrow: {fileID: 0}
   glowMaterial: {fileID: 0}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!95 &1601750212
 Animator:
   serializedVersion: 7
@@ -13774,6 +13806,7 @@ MonoBehaviour:
   text: {fileID: 1832313968}
   arrow: {fileID: 0}
   glowMaterial: {fileID: 0}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!95 &1880759967
 Animator:
   serializedVersion: 7
@@ -14057,6 +14090,7 @@ MonoBehaviour:
   text: {fileID: 1171373961}
   arrow: {fileID: 0}
   glowMaterial: {fileID: 0}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!95 &1911374090
 Animator:
   serializedVersion: 7
@@ -14323,6 +14357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UISlider
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 0, g: 1, b: 1, a: 1}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!1 &1940601472
 GameObject:
   m_ObjectHideFlags: 0
@@ -14653,6 +14688,7 @@ MonoBehaviour:
   text: {fileID: 873311242}
   arrow: {fileID: 0}
   glowMaterial: {fileID: 0}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!1 &2011664498
 GameObject:
   m_ObjectHideFlags: 0
@@ -15067,6 +15103,7 @@ MonoBehaviour:
   text: {fileID: 652718063}
   arrow: {fileID: 0}
   glowMaterial: {fileID: 0}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!95 &2145056244
 Animator:
   serializedVersion: 7

@@ -5,18 +5,18 @@ namespace Game.Gameplay
 {
     public class PlayerMovement : MonoBehaviour
     {
-        public static PlayerMovement Instance { get; private set; }
-
         [Header("Movement Settings")]
         [SerializeField] private float speed = 10f;
         [SerializeField] private float initialImpulse = 8f;
 
         [Header("Rotation Settings")]
         [SerializeField] private float baseRotationSpeed = 720f;
-        [SerializeField] private GameSettingsSO settings;
 
         [Header("Effects")]
         public ParticleSystem thrusterParticles;
+
+        [Header("References")]
+        [SerializeField] private TransformReferenceSO playerReference;
 
         private Rigidbody playerRb;
         private Camera mainCamera;
@@ -24,15 +24,8 @@ namespace Game.Gameplay
         private PlayerTurbo turbo;
         private InputReader input;
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            Instance = this;
-        }
+        private void OnEnable() => playerReference.Register(transform);
+        private void OnDisable() => playerReference.Unregister(transform);
 
         void Start()
         {
@@ -80,14 +73,11 @@ namespace Game.Gameplay
 
         private void RotatePlayer()
         {
-            float sensitivity = settings != null ? settings.AimSensitivity : 1f;
             if (PointerUtils.TryGetAimInfo(mainCamera, input.AimScreenPosition, transform.position, out Vector3 direction, out _))
             {
                 float targetAngleY = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
                 Quaternion targetRotation = Quaternion.Euler(0f, targetAngleY, 0f);
-
-                float currentTurnSpeed = baseRotationSpeed * sensitivity;
-                Quaternion newRotation = Quaternion.RotateTowards(playerRb.rotation, targetRotation, currentTurnSpeed * Time.fixedDeltaTime);
+                Quaternion newRotation = Quaternion.RotateTowards(playerRb.rotation, targetRotation, baseRotationSpeed * Time.fixedDeltaTime);
 
                 playerRb.MoveRotation(newRotation);
             }

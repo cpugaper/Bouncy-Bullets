@@ -1,3 +1,4 @@
+using Game.Core;
 using System;
 using UnityEngine;
 
@@ -5,10 +6,15 @@ namespace Game.Gameplay
 {
     public abstract class Pickup : MonoBehaviour
     {
+        [Header("Event Channels")]
+        [SerializeField] protected SfxEventChannelSO sfxEventChannel;
+
         [SerializeField] private float lifetime = 12f;
 
         private Action onDespawn;
         private float timer;
+
+        protected abstract SfxType PickupSfx { get; }
 
         public void SetDespawnCallback(Action callback)
         {
@@ -35,14 +41,12 @@ namespace Game.Gameplay
 
             if (TryApplyEffect(other.gameObject))
             {
-                PlayPickupSound();
+                if (sfxEventChannel != null) sfxEventChannel.RaiseEvent(PickupSfx);
                 ReturnToPool();
             }
         }
 
         protected abstract bool TryApplyEffect(GameObject player);
-
-        protected abstract void PlayPickupSound();
 
         private void ReturnToPool()
         {

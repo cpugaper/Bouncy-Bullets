@@ -31,6 +31,9 @@ namespace Game.Gameplay
         [Header("Phases")]
         [SerializeField] private PhaseManager phaseManager;
 
+        [Header("References")]
+        [SerializeField] private TransformReferenceSO playerReference;
+
         private readonly Dictionary<EnemyType, GameObject> prefabs = new Dictionary<EnemyType, GameObject>();
         private readonly Dictionary<EnemyType, ObjectPool<GameObject>> pools = new Dictionary<EnemyType, ObjectPool<GameObject>>();
         private readonly HashSet<GameObject> activeEnemies = new HashSet<GameObject>();
@@ -164,12 +167,15 @@ namespace Game.Gameplay
 
         private Vector3 GetRandomPositionAwayFromPlayer(Rect area)
         {
-            Vector3 playerPos = PlayerMovement.Instance.transform.position;
+            Transform player = playerReference.Value;
+            if (player == null) return GetRandomEdgePosition(area);
+
+            Vector3 playerPos = player.position;
 
             Vector2 randomDir = Random.insideUnitCircle.normalized;
             float randomDistance = Random.Range(minDistanceFromPlayer, maxDistanceFromPlayer);
 
-            Vector3 direction = new Vector3(randomDir.x, 0f, randomDir.y);
+            Vector3 direction = new(randomDir.x, 0f, randomDir.y);
             Vector3 spawnPos = playerPos + direction * randomDistance;
 
             // Limits enemy from spawing outside the visible area

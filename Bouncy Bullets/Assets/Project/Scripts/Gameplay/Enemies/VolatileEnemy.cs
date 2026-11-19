@@ -1,3 +1,4 @@
+using Game.Core;
 using System.Collections;
 using UnityEngine;
 
@@ -14,12 +15,21 @@ namespace Game.Gameplay
         [SerializeField] private LayerMask destructionMask;
         [SerializeField, Range(0.7f, 1f)] private float damageRadiusMultiplier = 0.9f;
 
+        [Header("Event Channels")]
+        [SerializeField] private SfxEventChannelSO sfxEventChannel;
+
+        [Header("References")]
+        [SerializeField] private TransformReferenceSO playerReference;
+
         private Vector3 direction;
         private bool hasCalculatedDirection;
         private bool isOverloading = false;
 
         private VolatileEffect visuals;
         private Coroutine overloadCoroutine;
+
+        private const int MaxHits = 64;
+        private readonly Collider[] blastBuffer = new Collider[MaxHits];
 
         private void Awake()
         {
@@ -43,9 +53,10 @@ namespace Game.Gameplay
 
             if (!hasCalculatedDirection)
             {
-                if (PlayerMovement.Instance != null)
+                Transform player = playerReference.Value;
+                if (player != null)
                 {
-                    Vector3 playerPos = PlayerMovement.Instance.transform.position;
+                    Vector3 playerPos = player.position;
                     direction = (playerPos - transform.position).normalized;
                     hasCalculatedDirection = true;
                 }
@@ -66,12 +77,7 @@ namespace Game.Gameplay
 
             if (other.CompareTag("BouncyBullet"))
             {
-                if (addScoreEventChannel != null)
-                {
-                    addScoreEventChannel.RaiseEvent(scoreValue);
-                }
-
-                overloadCoroutine = StartCoroutine(OverloadSequence());
+                TriggerOverload();
             }
             else if (other.CompareTag("EnemyBullet"))
             {
@@ -87,7 +93,7 @@ namespace Game.Gameplay
         {
             isOverloading = true;
 
-            if (AudioManager.Instance != null) AudioManager.Instance.PlayVolatileCharge();
+            if (sfxEventChannel != null) sfxEventChannel.RaiseEvent(SfxType.VolatileCharge);
 
             float timer = 0f;
             while (timer < overloadDuration)
@@ -105,29 +111,29 @@ namespace Game.Gameplay
 
         private void Detonate()
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius * damageRadiusMultiplier, destructionMask);
+            int count = Physics.OverlapSphereNonAlloc(transform.position, explosionRadius * damageRadiusMultiplier, blastBuffer, destructionMask);
 
-            foreach (Collider hit in hits)
+            for (int i = 0; i < count; i++)
             {
-                if (hit.gameObject == this.gameObject) continue;
-
-                if (hit.TryGetComponent(out Enemy enemyHit))
-                {
-                    enemyHit.Die();
-                }
-                else if (hit.TryGetComponent(out BouncyBullet bullet))
-                {
-                    bullet.ReturnToPool();
-                }
-                else if (hit.TryGetComponent(out PlayerHealth player))
-                {
-                    if (PlayerShield.HasActiveShield(hit)) continue;
-                    player.Die();
-                }
+                Collider hit = blastBuffer[i];
+                if (hit.gameObject == gameObject) continue;
+                if (hit.TryGetComponent(out IKillable target)) target.Die();
             }
 
             Die();
         }
+
+        public void TriggerOverload()
+        {
+            if (isOverloading) return;
+
+            if (addScoreEventChannel != null)
+            {
+                addScoreEventChannel.RaiseEvent(scoreValue);
+            }
+
+            overloadCoroutine = StartCoroutine(OverloadSequence());
+        } 
 
         public override void Die()
         {

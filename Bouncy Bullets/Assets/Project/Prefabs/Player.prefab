@@ -69,7 +69,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!65 &784184703098181174
@@ -107,9 +107,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   speed: 20
   initialImpulse: 15
-  baseRotationSpeed: 720
-  settings: {fileID: 11400000, guid: 1750f363ed00d8240bce121e9e640376, type: 2}
+  baseRotationSpeed: 1500
   thrusterParticles: {fileID: 7923072854390042732}
+  playerReference: {fileID: 11400000, guid: 8584ab05dc9a1f249867e54dad661493, type: 2}
 --- !u!114 &5264749518813902279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,6 +208,7 @@ MonoBehaviour:
   turboImpulseForce: 15
   turboChangedEventChannel: {fileID: 11400000, guid: 171dabdc24390164fbb8009a8c18b0bb, type: 2}
   runStartedEventChannel: {fileID: 11400000, guid: 8ffc30d37f865a949a866799b8ce8781, type: 2}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
 --- !u!114 &-5957311627573846725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,6 +228,7 @@ MonoBehaviour:
     m_Bits: 320
   expansionDuration: 0.35
   shockwaveChangedEventChannel: {fileID: 11400000, guid: d47ad7b299ca3c944b9be6575711409b, type: 2}
+  sfxEventChannel: {fileID: 11400000, guid: b95864bf14643c045b4dd56c43cb2b9e, type: 2}
   shockwaveVisualQuad: {fileID: 7003426906535800966}
 --- !u!1 &5717577283065816481
 GameObject:
@@ -5293,9 +5295,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShockwaveQuad
       objectReference: {fileID: 0}
+    - target: {fileID: 6636057067321306682, guid: 07abc152408090c43b027aefbfe8868e, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 7426273440731293070, guid: 07abc152408090c43b027aefbfe8868e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.01024
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7426273440731293070, guid: 07abc152408090c43b027aefbfe8868e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5303,7 +5309,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7426273440731293070, guid: 07abc152408090c43b027aefbfe8868e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.18086
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7426273440731293070, guid: 07abc152408090c43b027aefbfe8868e, type: 3}
       propertyPath: m_LocalRotation.w
